@@ -12,7 +12,10 @@ import java.util.ArrayList;
 
 public class MainMenuPane extends JPanel implements KeyListener{
 
-
+    //cvar_'s are client variables -- basically stuff the client needs to know about the situation.
+    //evar_'s are engine variables -- window size, that kinda stuff
+    //statevar_'s are gamestate variables that describe the state of the game -- stuff like health
+    //gamevar_'s are game variables that affect gameplay -- stuff like max health and how much dammage a bullet does
     Graphics g;
     Stack rendStack = new Stack();
     Stack activeStack = rendStack;
@@ -75,6 +78,8 @@ public class MainMenuPane extends JPanel implements KeyListener{
         System.out.println("Creating some resources...");
         globalFrame = frame;
         ship = new Rect();
+        
+        //moves the ship to the middle of the window and sets its height, width, and color (color is last 3 args as r, g, b)
         ship.setAttributes(frame.getWidth() / 2, frame.getHeight() / 2, 20, 20, 0, 0, 255);
 
         Physics phys = new Physics();
@@ -105,8 +110,12 @@ public class MainMenuPane extends JPanel implements KeyListener{
 
         // put all the objects into the rendStack
         int delay = 25;
+        
+        //MAIN GAME LOOP:
+        
         ActionListener taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                
                 //System.out.println(phys.pointInObj((int) frame.getMousePosition().getX(), (int) frame.getMousePosition().getY(), start_bounding_box));
                 //if (phys.pointInObj((int) frame.getMousePosition().getX(), (int) frame.getMousePosition().getY(), start_bounding_box)){
 //
@@ -195,7 +204,9 @@ public class MainMenuPane extends JPanel implements KeyListener{
     }
 
 
-
+ 
+    //called once per frame to draw the screen -- lots of repetitive stuff here, mainly due to problems with sprite drawing
+    //will fix eventually
     public void paintComponent(Graphics g) {
         //spriteStack.flush();
         spriteStack.add(enemysprite.getStack());
@@ -218,7 +229,7 @@ public class MainMenuPane extends JPanel implements KeyListener{
 
 
     }
-
+//keypress event handlers:
     @Override
     public void keyTyped(KeyEvent e) {
         // TODO Auto-generated method stub
@@ -243,7 +254,7 @@ public class MainMenuPane extends JPanel implements KeyListener{
         // TODO Auto-generated method stub
     }
 
-
+//clears the stack and adds standard assets -- transitions from menu to game
     void makeIngame(ArrayList<Primitive> standards){
         rendStack.flush();
         for (Primitive obj : standards){
