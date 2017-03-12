@@ -1,3 +1,7 @@
+//IGNORE THIS!! ITS BASICALLY A TEMPLATE FOR FRAMES. GO SEE MAINMENUPANE
+
+
+
 package stardust;
 
 import javax.swing.*;
