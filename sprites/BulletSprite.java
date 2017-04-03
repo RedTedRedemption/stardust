@@ -1,5 +1,6 @@
 package sprites;
 import slythr.*;
+import stardust.GlobalGamestate;
 
 import java.awt.*;
 
@@ -10,7 +11,7 @@ public class BulletSprite {
 
     Primitive emitter;
 
-    Stack spritelist = new Stack();
+    static Stack spritelist = new Stack();
 
     public BulletSprite(){
 
@@ -20,7 +21,12 @@ public class BulletSprite {
 
         System.out.println("instantiating bullet");
         Primitive self_primitive = new Rect();
-        self_primitive.setpos(emitter.getpos()[0], emitter.getpos()[1]);
+        //self_primitive.centerx(emitter.centerx());
+        //self_primitive.centery(emitter.centery());
+        //self_primitive.setpos(emitter.getpos()[0], emitter.getpos()[1]);
+        //self_primitive.setpos(emitter.centerx(), emitter.centery());
+        self_primitive.centerx(emitter.centerx());
+        self_primitive.centery(emitter.centery());
         self_primitive.setColor(255, 0, 0);
         self_primitive.setHeight(10);
         self_primitive .setWidth(5);
@@ -29,9 +35,18 @@ public class BulletSprite {
 
     }
 
-    public void behave(){
+    public void kill(Primitive instance){
+        spritelist.remove(instance);
+        System.out.println("brutally murdering bullet");
+    }
+
+    public static void behave(){
         for (Primitive obj : spritelist.makeArrayList()){
-            obj.setpos(obj.getpos()[0], obj.getpos()[1] - 1);
+            obj.setpos(obj.getpos()[0], obj.getpos()[1] - GlobalGamestate.gamevar_bulletspeed);
+            if (obj.centerx() < 0){
+                spritelist.remove(obj);
+            }
+
         }
     }
 
@@ -40,6 +55,8 @@ public class BulletSprite {
             obj.draw(g);
         }
     }
+
+
 
     public Stack getStack(){
         return spritelist;

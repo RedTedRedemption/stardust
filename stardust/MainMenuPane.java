@@ -10,7 +10,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 
-public class MainMenuPane extends JPanel implements KeyListener{
+public class MainMenuPane extends JPanel{
 
 
     Graphics g;
@@ -36,7 +36,13 @@ public class MainMenuPane extends JPanel implements KeyListener{
     Frame globalFrame;
     Primitive ship;
     KeyStroke keystroke;
-    Component globalListener = new Canvas();
+    boolean statevar_firing = false;
+    int gamevar_firecooldown = 20;
+    int statevar_firetemp = 0;
+    boolean evar_spacekey = false;
+    boolean statevar_weaponsArmed = true;
+
+    int gamevar_shipMoveSpeed = 10;
 
 
 
@@ -46,6 +52,12 @@ public class MainMenuPane extends JPanel implements KeyListener{
     char keybind_right = 'd';
     char keybind_left = 'a';
     char keybind_fire = ' ';
+
+    //keys
+    boolean evar_akey = false;
+    boolean evar_skey = false;
+    boolean evar_dkey = false;
+    boolean evar_wkey = false;
 
 
     //Render renderThread;
@@ -75,19 +87,152 @@ public class MainMenuPane extends JPanel implements KeyListener{
         System.out.println("Creating some resources...");
         globalFrame = frame;
         ship = new Rect();
+
+
         ship.setAttributes(frame.getWidth() / 2, frame.getHeight() / 2, 20, 20, 0, 0, 255);
 
         Physics phys = new Physics();
         standardStack.add(ship);
         globalGamestate = gamestateDatabase;
 
-        Action action = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ship.setColor(0,0,255);
-                System.out.println("performing action");
+        JRootPane rootPane = frame.getRootPane();
+
+        //actions for keybinds
+        System.out.println("Setting up actions...");
+        Action testAction = new AbstractAction("firingOn"){
+            public void actionPerformed(ActionEvent e){
+                System.out.println("performing test action");
             }
         };
+
+        Action spacePressed = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                evar_spacekey = true;
+            }
+        };
+
+        Action spaceReleased = new AbstractAction(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                evar_spacekey = false;
+            }
+        };
+
+        Action aPressed = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                evar_akey = true;
+            }
+        };
+
+        Action aReleased = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                evar_akey = false;
+            }
+        };
+
+
+        Action fireOn = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statevar_firing = true;
+            }
+        };
+
+        Action fireOff = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statevar_firing = false;
+            }
+        };
+
+
+        Action sPressed = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                evar_skey = true;
+            }
+        };
+
+        Action sReleased = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                evar_skey = false;
+            }
+        };
+
+        Action dPressed = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                evar_dkey = true;
+            }
+        };
+
+        Action dReleased = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                evar_dkey = false;
+            }
+        };
+
+        Action wPressed = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                evar_wkey = true;
+            }
+        };
+
+        Action wReleased = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                evar_wkey = false;
+            }
+        };
+
+
+
+
+        //put keybinds
+        System.out.println("Setting up keybinds...");
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("SPACE"), "spacePressed");
+        rootPane.getActionMap().put("spacePressed", spacePressed);
+
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released SPACE"), "spaceReleased");
+        rootPane.getActionMap().put("spaceReleased", spaceReleased);
+
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("A"), "aPressed");
+        rootPane.getActionMap().put("aPressed", aPressed);
+
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released A"), "aReleased");
+        rootPane.getActionMap().put("aReleased", aReleased);
+
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("pressed S"), "sPressed");
+        rootPane.getActionMap().put("sPressed", sPressed);
+
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released S"), "sReleased");
+        rootPane.getActionMap().put("sReleased", sReleased);
+
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("pressed D"), "dPressed");
+        rootPane.getActionMap().put("dPressed", dPressed);
+
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released D"), "dReleased");
+        rootPane.getActionMap().put("dReleased", dReleased);
+
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("pressed W"), "wPressed");
+        rootPane.getActionMap().put("wPressed", wPressed);
+
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released W"), "wReleased");
+        rootPane.getActionMap().put("wReleased", wReleased);
+
+
+
+
+
+
+
+
 
         //frame listener
 
@@ -95,10 +240,8 @@ public class MainMenuPane extends JPanel implements KeyListener{
 
 
 
-
         System.out.println("Done!");
-        System.out.println("Adding keylistener");
-        addKeyListener(this);
+
 
 
 
@@ -131,6 +274,11 @@ public class MainMenuPane extends JPanel implements KeyListener{
                     if (cvar_gamestate == 0){
                         rendStack = new levelMenu().getMe();
                         enemysprite = new EnemySprite();
+                        if (evar_spacekey){
+                            cvar_gamestate = 1;
+                            rendStack.flush();
+                            makeIngame(standardStack.makeArrayList());
+                        }
                     }
 
                     if (cvar_gamestate == 1 && evar_loading){ //loads all necessary resources for the playground level
@@ -140,7 +288,7 @@ public class MainMenuPane extends JPanel implements KeyListener{
                         //keep menu items and stuff after we're done with them.
                         evar_loading = false; //keeps this from happening every time we call the frame
                        //enemysprite.instantiate(frame, globalGamestate);
-                        bulletSprite.instantiate(ship);
+                        //bulletSprite.instantiate(ship);
 
 
 
@@ -150,7 +298,7 @@ public class MainMenuPane extends JPanel implements KeyListener{
 
                         enemysprite.behave(ship);
                         bulletSprite.behave();
-                        System.out.println(globalGamestate.statevar_playerHealth);
+                        //System.out.println(globalGamestate.statevar_playerHealth);
                         if (globalGamestate.statevar_playerHealth <= 0){
                             System.out.println("player is dead");
                             rendStack.remove(ship);
@@ -162,6 +310,31 @@ public class MainMenuPane extends JPanel implements KeyListener{
                         GameoverLevel gameover_level = new GameoverLevel();
                         rendStack.add(gameover_level.getMe());
                     }
+
+                    if (statevar_weaponsArmed){
+                        statevar_firing = evar_spacekey;
+                    }
+
+                    if (statevar_firing && statevar_firetemp <= 0){
+                        bulletSprite.instantiate(ship);
+
+                        statevar_firetemp = gamevar_firecooldown;
+                    }
+
+                    //ship movement
+
+                    if (evar_dkey){
+                        ship.setpos(ship.getpos()[0] + gamevar_shipMoveSpeed, ship.getpos()[1]);
+                    }
+                    if (evar_akey){
+                        ship.setpos(ship.getpos()[0] - gamevar_shipMoveSpeed, ship.getpos()[1]);
+                    }
+
+
+                    //cool cooldowns
+                    statevar_firetemp = statevar_firetemp - 1;
+
+
 
 
                             //////////////////////
@@ -219,29 +392,7 @@ public class MainMenuPane extends JPanel implements KeyListener{
 
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        // TODO Auto-generated method stub
-        cvar_gamestate = 1;
-        evar_loading = true;
-        if (cvar_gamestate == 1){
-            //bulletSprite.instantiate(ship);
-            //enemysprite.instantiate(globalFrame, globalGamestate);
-        }
-        //enemysprite.instantiate(globalFrame, globalGamestate);
-    }
-
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        // TODO Auto-generated method stub
-    }
 
 
     void makeIngame(ArrayList<Primitive> standards){

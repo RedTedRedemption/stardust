@@ -39,5 +39,6 @@ public class Main {
         frame.setContentPane(new MainMenuPane(frame, new GlobalGamestate()));
         frame.setVisible(true);
 
+
     }
 }

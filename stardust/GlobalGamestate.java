@@ -5,9 +5,12 @@ package stardust;
  */
 public class GlobalGamestate {
 
-    public int gamevar_playerHealth = 10;
+    public static int gamevar_playerHealth = 10;
 
-    public int statevar_playerHealth;
+    public static int statevar_playerHealth;
+
+    public static int gamevar_bulletspeed = 10;
+
 
 
 

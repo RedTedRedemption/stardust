@@ -76,4 +76,8 @@ public class Stack {
 		return tout;
 	}
 
+	public Object[] toArray(){
+		return stack.toArray();
+	}
+
 }

@@ -12,10 +12,7 @@ public class Rect extends Primitive {
 	public int origin_y = 0;
 	public int height = 20;
 	public int width = 20;
-	public int center_x = origin_x + (width / 2);
-	public int center_y = origin_y + (height / 2);
 	public int[] physics_velocity = { 0, 0 };
-
 	public Rect() {
 
 	}
@@ -29,6 +26,8 @@ public class Rect extends Primitive {
 		color_r = r;
 		color_g = g;
 		color_b = b;
+		center_x = x - (width / 2);
+		center_y = y - (height / 2);
 
 		/*
 		System.out.print("the attributes of object ");
@@ -88,6 +87,14 @@ public class Rect extends Primitive {
 
 	public void centerx(int x) {
 		origin_x = x - (width / 2);
+	}
+
+	public int centerx(){
+		return origin_x + (width / 2);
+	}
+
+	public int centery(){
+		return origin_y + (width / 2);
 	}
 
 	public void centery(int y) {

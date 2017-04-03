@@ -12,6 +12,8 @@ public class Primitive {
 	public int origin_x;
 	public int origin_y;
 	public int[] origin;
+	public int center_x;
+	public int center_y;
 
 	// primitives
 	public void draw(Graphics g) {
@@ -37,8 +39,17 @@ public class Primitive {
 
 	}
 
+	public int centerx(){
+		return 1;
+	}
+
+
 	public void centery(int y) {
 		// sets origin to align center y to this coordinate
+	}
+
+	public int centery(){
+		return 1;
 	}
 
 	public void setSFont(Resource hellofont) {

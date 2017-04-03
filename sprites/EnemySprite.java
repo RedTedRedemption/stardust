@@ -6,6 +6,7 @@ import slythr.Stack;
 import slythr.Physics;
 import stardust.GlobalGamestate;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  */
 public class EnemySprite{
 
-    public Stack spriteList = new Stack();
+    static public Stack spriteList = new Stack();
     Physics phys = new Physics();
     GlobalGamestate globalGamestate;
 
@@ -25,20 +26,19 @@ public class EnemySprite{
 
     }
 
-    public void instantiate(Frame frame, GlobalGamestate globalDatabase){
+    public void instantiate(Frame frame, GlobalGamestate globalDatabase) {
         System.out.println("trying to instantiate");
-        Primitive self_primitive = new Rect();b
+        Primitive self_primitive = new Rect();
         self_primitive.setpos(frame.getWidth() / 2, 50);
         self_primitive.setColor(255, 0, 0);
-        self_primitive.setHeight(10);it
+        self_primitive.setHeight(10);
         self_primitive.setWidth(10);
         spriteList.add(self_primitive);
         globalGamestate = globalDatabase;
-
-
-
-
     }
+
+
+
 
     public void behave(Primitive ship){
         for (Primitive me : spriteList.makeArrayList()){
