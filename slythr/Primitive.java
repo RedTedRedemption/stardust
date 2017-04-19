@@ -14,6 +14,11 @@ public class Primitive {
 	public int[] origin;
 	public int center_x;
 	public int center_y;
+	public int self_size;
+	public int physics_velocity_x;
+	public int physics_velocity_y;
+	public boolean enabled = true;
+	public Font use_font;
 
 	// primitives
 	public void draw(Graphics g) {
@@ -115,5 +120,37 @@ public class Primitive {
 
 	public String getSelfContent() {
 		return "error, wrong scope for getSelfContent call";
+	}
+
+	public void move(double time){
+		//setpos(getpos()[0] + physics_velocity_x, getpos()[1] + physics_velocity_y);
+
+	}
+
+	public void setPhysics_velocity_x(int magnitude){
+		//physics_velocity_x = magnitude;
+	}
+
+	public void setPhysics_velocity_y(int magnitude){
+		//physics_velocity_y = magnitude;
+	}
+
+	public void setPhysics_velocity(int x, int y){
+		//physics_velocity_x = x;
+		//physics_velocity_y = y;
+	}
+
+	public void enable(){
+		enabled = true;
+	}
+	public void disable(){
+		enabled = false;
+	}
+	public void toggle() {
+		if (enabled) {
+			enabled = false;
+		} else {
+			enabled = true;
+		}
 	}
 }

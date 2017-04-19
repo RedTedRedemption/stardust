@@ -4,12 +4,13 @@ package stardust; /**
 
 import java.awt.Graphics;
 import java.awt.event.KeyListener;
+import java.io.FileNotFoundException;
 import java.sql.Time;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import slythr.*;
-
+import levels.*;
 
 
 
@@ -17,11 +18,12 @@ import slythr.*;
 public class Main {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
 
 
 
-        System.out.println("Initializing Driver...");
+
+        System.out.print("Initializing Driver...");
 
         JFrame frame = new JFrame("asteroids");
         frame.setTitle("Asteroids: Powered by Slythr");
@@ -36,8 +38,11 @@ public class Main {
 //            e.printStackTrace();
 //        }
         frame.setVisible(false);
+        System.out.println("done");
+        System.out.println("spawning pane");
         frame.setContentPane(new MainMenuPane(frame, new GlobalGamestate()));
         frame.setVisible(true);
+
 
 
     }

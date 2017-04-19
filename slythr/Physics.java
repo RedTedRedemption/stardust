@@ -1,12 +1,17 @@
 package slythr;
 
+import stardust.GlobalGamestate;
+
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Physics {
 
-	public Physics() {
+	public GlobalGamestate globalGamestate;
 
+	public Physics(GlobalGamestate gamestate) {
+		globalGamestate = gamestate;
 	}
 
 	// public boolean objectsCollide(slythr.Primitive obj1, slythr.Primitive obj2){
@@ -48,7 +53,7 @@ public class Physics {
 		// [0, 1] [2, 3]
 		// A----------B
 		// | |
-		// | | <== REMEMBER, ITS INVERTED!
+		// | | <== REMEMBER, Y VALUE IS INVERTED!
 		// | |
 		// C----------D
 		// [4,5] [6, 7]
@@ -103,6 +108,12 @@ public class Physics {
                     || pointInObj(point_arr2[2], point_arr2[5], obj1);
 		}
 
+	}
+
+	public void simulate(){
+		for (Primitive obj : globalGamestate.physics_stack.makeArrayList()){
+			obj.move(globalGamestate.time);
+		}
 	}
 
 }

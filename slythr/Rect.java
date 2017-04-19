@@ -1,5 +1,7 @@
 package slythr;
 
+import stardust.GlobalGamestate;
+
 import java.awt.Color;
 import java.awt.Graphics;
 
@@ -12,9 +14,13 @@ public class Rect extends Primitive {
 	public int origin_y = 0;
 	public int height = 20;
 	public int width = 20;
-	public int[] physics_velocity = { 0, 0 };
-	public Rect() {
+	public int physics_velocity_x = 0;
+	public int physics_velocity_y = 0;
+	public boolean enabled = true;
+	private GlobalGamestate globalGamestate;
 
+	public Rect(GlobalGamestate gamestate) {
+		globalGamestate = gamestate;
 	}
 
 	public void setAttributes(int x, int y, int Height, int Width, int r, int g, int b) {
@@ -28,6 +34,7 @@ public class Rect extends Primitive {
 		color_b = b;
 		center_x = x - (width / 2);
 		center_y = y - (height / 2);
+
 
 		/*
 		System.out.print("the attributes of object ");
@@ -43,15 +50,31 @@ public class Rect extends Primitive {
 	public void draw(Graphics g) {
 
 		// System.out.println("drawing from rect");
-		g.setColor(new Color(color_r, color_g, color_b));
-		g.fillRect(origin_x, origin_y, width, height);
-
+		if (enabled) {
+			g.setColor(new Color(color_r, color_g, color_b));
+			g.fillRect(origin_x, origin_y, width, height);
+		}
 	}
 
 	public void setColor(int R, int G, int B) {
 		color_r = R;
 		color_g = G;
 		color_b = B;
+	}
+
+
+
+	public void setPhysics_velocity_x(int magnitude){
+		physics_velocity_x = magnitude;
+	}
+
+	public void setPhysics_velocity_y(int magnitude){
+		physics_velocity_y = magnitude;
+	}
+
+	public void setPhysics_velocity(int x, int y){
+		physics_velocity_x = x;
+		physics_velocity_y = y;
 	}
 
 	public void setpos(int x, int y) {
@@ -64,6 +87,9 @@ public class Rect extends Primitive {
 		origin_y = origin_y + y;
 	}
 
+	public void move(double time){
+		setpos(getpos()[0] + (int)(physics_velocity_x * time), getpos()[1] + (int)(physics_velocity_y * time));
+	}
 	public int[] getpos() {
 		int[] coords = { origin_x, origin_y };
 		return coords;
@@ -94,7 +120,7 @@ public class Rect extends Primitive {
 	}
 
 	public int centery(){
-		return origin_y + (width / 2);
+		return origin_y + (height / 2);
 	}
 
 	public void centery(int y) {
@@ -107,5 +133,19 @@ public class Rect extends Primitive {
 
 	public void setHeight(int value) {
 		height = value;
+	}
+
+	public void enable(){
+		enabled = true;
+	}
+	public void disable(){
+		enabled = false;
+	}
+	public void toggle() {
+		if (enabled) {
+			enabled = false;
+		} else {
+			enabled = true;
+		}
 	}
 }

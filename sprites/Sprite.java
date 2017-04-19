@@ -2,6 +2,7 @@ package sprites;
 
 import slythr.Primitive;
 import slythr.Stack;
+import stardust.GlobalGamestate;
 
 import java.awt.*;
 
@@ -10,24 +11,30 @@ import java.awt.*;
  */
 public class Sprite {
 
-    public Sprite(Primitive ship){
+    public Sprite(Primitive ship) {
 
     }
 
-    public void behave(){
+    public Sprite() {
+    }
+
+    public void behave() {
 
     }
 
-    public void instantiate(Frame frame){
+    public void instantiate(Frame frame) {
 
     }
 
-    public void draw(Graphics g){
+    public void draw(Graphics g) {
 
     }
 
-    public Stack getStack(){
+    public Stack getStack() {
         return new Stack();
     }
 
+    public void instantiate(Frame frame, GlobalGamestate globalGamestate) {
+
+    }
 }

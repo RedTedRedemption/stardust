@@ -1,5 +1,7 @@
 package slythr;
 
+import stardust.GlobalGamestate;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,12 +13,14 @@ public class Splash extends JFrame {
     Graphics g;
     Primitive title;
     Primitive templogo;
+    GlobalGamestate globalGamestate;
 
-    public Splash(Frame frame){
+    public Splash(Frame frame, GlobalGamestate gamestate, Graphics g){
         super();
-        title = new Text("Powered by Slythr", 48);
+        globalGamestate = gamestate;
+        title = new Text("Powered by Slythr", 48, g);
         title.setpos(frame.getHeight() / 2 + 20, frame.getWidth() / 2 - 150);
-        templogo = new Rect();
+        templogo = new Rect(globalGamestate);
         templogo.setColor(238, 255, 0);
         templogo.centerx(frame.getWidth() / 2);
         templogo.centery(frame.getHeight() / 2);

@@ -9,17 +9,17 @@ import java.awt.*;
 /**
  * Created by teddy on 3/5/17.
  */
-public class levelPlayground extends Level {
+public class levelPlayground{
 
     Stack myStack = new Stack();
 
    // public EnemySprite enemysprite = new EnemySprite();
 
-    public levelPlayground(Frame frame){
+   // public levelPlayground(Frame frame){
 
 
 
-    }
+   // }
 
     public Stack getMe(){
         return myStack;
