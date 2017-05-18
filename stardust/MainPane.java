@@ -287,6 +287,7 @@ public class MainPane extends JPanel{
         healthbar.setWidth(GlobalGamestate.statevar_playerHealth);
         healthbar.setHeight(15);
         healthbar.setColor(0, 0,255);
+        System.out.println();
         healthbar.setLabel("player's healthbar");
 
 
