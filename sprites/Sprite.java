@@ -22,19 +22,19 @@ public class Sprite {
 
     }
 
-    public void instantiate(Frame frame) {
+    public static void instantiate(Frame frame) {
 
     }
 
-    public void draw(Graphics g) {
+    public static void draw(Graphics g) {
 
     }
 
-    public Stack getStack() {
+    public static Stack getStack() {
         return new Stack();
     }
 
-    public void instantiate(Frame frame, GlobalGamestate globalGamestate) {
+    public static void instantiate(Frame frame, GlobalGamestate globalGamestate) {
 
     }
 }

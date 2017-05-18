@@ -1,6 +1,7 @@
 package levels;
 
 import slythr.*;
+import stardust.GlobalGamestate;
 
 import java.awt.*;
 
@@ -10,11 +11,13 @@ import java.awt.*;
 public class GameoverLevel {
 
     Graphics g;
+    GlobalGamestate globalGamestate;
 
     Stack selfstack = new Stack();
 
-    public GameoverLevel(Graphics g){
-        Primitive gameover = new Text("Game Over!", 48, g);
+    public GameoverLevel(Graphics g, GlobalGamestate gamestate){
+        globalGamestate = gamestate;
+        Primitive gameover = new Text("Game Over!", 48, g, globalGamestate);
         gameover.setpos(300, 300);
         selfstack.add(gameover);
     }

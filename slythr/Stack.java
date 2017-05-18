@@ -1,12 +1,12 @@
 package slythr;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.*;
 
 public class Stack {
 
-	List<Primitive> stack = new ArrayList<Primitive>();
+	ArrayList<Primitive> stack = new ArrayList<Primitive>();
 
 
 	public Stack() {

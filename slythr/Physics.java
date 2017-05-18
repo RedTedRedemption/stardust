@@ -2,6 +2,10 @@ package slythr;
 
 import stardust.GlobalGamestate;
 
+import javax.management.InstanceAlreadyExistsException;
+import java.time.Instant;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +13,12 @@ import java.util.List;
 public class Physics {
 
 	public GlobalGamestate globalGamestate;
+
+	static long physstart = 0;
+
+	public static long simfrom = 1;
+
+	public static long elapsed;
 
 	public Physics(GlobalGamestate gamestate) {
 		globalGamestate = gamestate;
@@ -49,12 +59,12 @@ public class Physics {
 		return false;
 	}
 
-	public int[] getPointsRect(Primitive obj) {
+	public static int[] getPointsRect(Primitive obj) {
 		// [0, 1] [2, 3]
 		// A----------B
-		// | |
-		// | | <== REMEMBER, Y VALUE IS INVERTED!
-		// | |
+		// |          |
+		// |          | <== REMEMBER, Y VALUE IS INVERTED!
+		// |          |
 		// C----------D
 		// [4,5] [6, 7]
 
@@ -83,7 +93,7 @@ public class Physics {
 		return tout;
 	}
 
-	public boolean pointInObj(int x, int y, Primitive obj) {
+	public static boolean pointInObj(int x, int y, Primitive obj) {
 		// System.out.println("testing for point within object...");
 		int[] point_arr = getPointsRect(obj);
 		// System.out.println("Sample of point array: " + point_arr[0] + " " +
@@ -93,7 +103,9 @@ public class Physics {
         return x > point_arr[0] && x < point_arr[2] && y > point_arr[1] && y < point_arr[5];
 	}
 
-	public boolean doObjectsCollide(Primitive obj1, Primitive obj2) {
+	public static boolean doObjectsCollide(Primitive obj1, Primitive obj2) {
+//		obj1.update();
+//		obj2.update();
 		// System.out.println("Starting collision test");
 		int[] point_arr1 = getPointsRect(obj1);
 		int[] point_arr2 = getPointsRect(obj2);
@@ -110,10 +122,16 @@ public class Physics {
 
 	}
 
-	public void simulate(){
-		for (Primitive obj : globalGamestate.physics_stack.makeArrayList()){
-			obj.move(globalGamestate.time);
+	public static void simulate(){
+		//simfrom = 1 + Instant.now().get(ChronoField.INSTANT_SECONDS);
+		physstart = Instant.now().getNano();
+		for (Primitive obj : GlobalGamestate.physics_stack.makeArrayList()){
+			obj.move(GlobalGamestate.time);
+
 		}
+		elapsed = ((Instant.now().getNano() - physstart) / 1000000) + 1;
+
+
 	}
 
 }

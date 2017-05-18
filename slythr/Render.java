@@ -1,7 +1,6 @@
 package slythr;
 
 import java.awt.*;
-import javax.swing.*;
 
 public class Render extends Thread {
 

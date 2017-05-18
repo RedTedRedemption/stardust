@@ -4,6 +4,8 @@ import java.awt.*;
 
 public class Resource {
 
+	public Resource self_font;
+
 	public void setAttributes(int Size, int Style, String Name) {
 		// sets attributes
 	}

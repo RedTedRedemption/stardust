@@ -1,7 +1,5 @@
 package slythr;
 
-import slythr.Resource;
-
 import java.awt.*;
 
 public class Primitive {
@@ -19,8 +17,20 @@ public class Primitive {
 	public int physics_velocity_y;
 	public boolean enabled = true;
 	public Font use_font;
+	public Animation self_animation;
+	public boolean sprite;
+	public int sprite_step;
+	public Primitive bounding_box;
+	public String type;
+	public String label;
+
 
 	// primitives
+
+	public void update(Graphics g){
+
+	}
+
 	public void draw(Graphics g) {
 		System.out.println("drawing from primitive");
 	}
@@ -35,6 +45,10 @@ public class Primitive {
 
 	}
 
+	public void setImage(String path) throws java.io.IOException {
+
+	}
+
 	public void setAttributes(int x, int y, int Height, int Width, int r, int g, int b) {
 		// sets attributes of primitive object
 	}
@@ -42,6 +56,8 @@ public class Primitive {
 	public void centerx(int x) {
 		// sets origin to align center x to this coordinate
 
+	}
+	public void centerx(int x, Graphics g) {
 	}
 
 	public int centerx(){
@@ -59,6 +75,10 @@ public class Primitive {
 
 	public void setSFont(Resource hellofont) {
 
+	}
+
+	public int[] getPhysics_velocity(){
+		return physics_velocity;
 	}
 
 	public void move(int x, int y) {
@@ -93,7 +113,7 @@ public class Primitive {
 
 	}
 
-	public int getHeight() {
+	public int getHeight(){
 		return -1;
 	}
 
@@ -140,17 +160,53 @@ public class Primitive {
 		//physics_velocity_y = y;
 	}
 
-	public void enable(){
-		enabled = true;
-	}
+	public void enable(){}
 	public void disable(){
-		enabled = false;
+
 	}
 	public void toggle() {
-		if (enabled) {
-			enabled = false;
-		} else {
-			enabled = true;
-		}
+	}
+
+//	public void update(){
+//
+//	}
+
+	public boolean isClicked(){
+		return false;
+	}
+
+	public int bind_Animation(Animation anim){
+		return -1;
+	}
+
+	public void make_Sprite(){
+		sprite = true;
+	}
+
+	public int sprite_Step(int stepby){
+		return -1;
+	}
+
+	public int getSprite_step(){
+		return -1;
+	}
+	public int get_step(){
+		return -1;
+	}
+
+	public void reset_sprite_animation(){
+		return;
+	}
+
+	public Primitive getBounding_box(){
+		return new Primitive();
+	}
+
+	public void draw_bounding_box(Graphics g){
+
+	}
+
+	public void setLabel(String identifier){
+		label = identifier;
 	}
 }

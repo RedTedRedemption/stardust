@@ -2,8 +2,8 @@ package slythr;
 
 import stardust.GlobalGamestate;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
+
 
 public class Rect extends Primitive {
 
@@ -18,10 +18,24 @@ public class Rect extends Primitive {
 	public int physics_velocity_y = 0;
 	public boolean enabled = true;
 	private GlobalGamestate globalGamestate;
+	public Animation self_animation;
+	public boolean sprite = false;
+	public int sprite_step;
+	public String label = "a rect object";
+
+
+
+
 
 	public Rect(GlobalGamestate gamestate) {
 		globalGamestate = gamestate;
+
 	}
+
+
+
+
+
 
 	public void setAttributes(int x, int y, int Height, int Width, int r, int g, int b) {
 
@@ -34,6 +48,7 @@ public class Rect extends Primitive {
 		color_b = b;
 		center_x = x - (width / 2);
 		center_y = y - (height / 2);
+		sprite_step = 0;
 
 
 		/*
@@ -46,6 +61,8 @@ public class Rect extends Primitive {
 		*/
 
 	}
+
+
 
 	public void draw(Graphics g) {
 
@@ -73,8 +90,12 @@ public class Rect extends Primitive {
 	}
 
 	public void setPhysics_velocity(int x, int y){
-		physics_velocity_x = x;
-		physics_velocity_y = y;
+		this.physics_velocity_x = x;
+		this.physics_velocity_y = y;
+	}
+
+	public int[] getPhysics_Velocity(){
+		return new int[] {this.physics_velocity_x, this.physics_velocity_y};
 	}
 
 	public void setpos(int x, int y) {
@@ -104,11 +125,11 @@ public class Rect extends Primitive {
 	}
 
 	public int getHeight() {
-		return height;
+		return this.height;
 	}
 
 	public int getWidth() {
-		return width;
+		return this.width;
 	}
 
 	public void centerx(int x) {
@@ -136,16 +157,43 @@ public class Rect extends Primitive {
 	}
 
 	public void enable(){
-		enabled = true;
+		this.enabled = true;
 	}
+
 	public void disable(){
-		enabled = false;
+		this.enabled = false;
 	}
+
 	public void toggle() {
-		if (enabled) {
-			enabled = false;
-		} else {
-			enabled = true;
-		}
+        this.enabled = !enabled;
 	}
+
+	public int bind_Animation(Animation anim){
+		self_animation = anim;
+		self_animation.setTarget(this);
+		return 1;
+	}
+
+	public void make_Sprite(){
+		sprite = true;
+	}
+
+	public int sprite_Step(int stepby){
+		sprite_step = sprite_step + 1;
+		return sprite_step;
+	}
+
+	public void reset_sprite_animation(){
+		sprite_step = 0;
+	}
+
+	public int get_step(){
+		return sprite_step;
+	}
+
+	public void setLabel(String identifier){
+		label = identifier;
+	}
+
+
 }
