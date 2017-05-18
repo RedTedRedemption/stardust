@@ -1,0 +1,9 @@
+textbox-levelchange sucess- - ;
+stop_time;
+start_time;
+asteroid 5;
+wait 50;
+enter_cutscene;
+textbox-now we're-in a-cutscene;
+exit_cutscene;
+EOL;
