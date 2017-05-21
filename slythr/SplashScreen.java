@@ -1,3 +1,9 @@
+package slythr;
+
+/**
+ * Created by teddy on 4/28/17.
+ */
+
 // SplashScreen.java
 // A simple application to show a title screen in the center of the screen
 // for the amount of time given in the constructor.  This class includes
@@ -5,14 +11,12 @@
 // with other applications.
 //
 
-package slythr;
-
-import javax.swing.*;
 import java.awt.*;
+        import javax.swing.*;
 
-public class Splash extends JWindow {
+public class SplashScreen extends JWindow {
     private int duration;
-    public Splash(int d) {
+    public SplashScreen(int d) {
         duration = d;
     }
 
@@ -33,32 +37,30 @@ public class Splash extends JWindow {
         // Build the splash screen
         JLabel label = new JLabel(new ImageIcon("oreilly.gif"));
         JLabel copyrt = new JLabel
-                ("Copyright 2002, O'Reilly & Associates", JLabel.CENTER);
-        copyrt.setFont(new Font("Sans-Serif", Font.BOLD, 12));
+                ("Powered by Slythr", JLabel.CENTER);
+        copyrt.setFont(new Font("Sans-Serif", Font.BOLD, 24));
         content.add(label, BorderLayout.CENTER);
-        content.add(copyrt, BorderLayout.SOUTH);
-        Color oraRed = new Color(156, 20, 20,  255);
+        content.add(copyrt, BorderLayout.NORTH);
+        Color oraRed = new Color(0, 0, 200,  255);
         content.setBorder(BorderFactory.createLineBorder(oraRed, 10));
 
         // Display it
         setVisible(true);
 
         // Wait a little while, maybe while loading resources
-        try { Thread.sleep(duration); } catch (Exception e) {
-            //pass
-        }
+        try { Thread.sleep(duration);} catch (Exception e) {}
 
         setVisible(false);
     }
 
     public void showSplashAndExit() {
         showSplash();
-        System.exit(0);
+
     }
 
-    public void dispsplash(String[] args) {
+    public static void runme() {
         // Throw a nice little title page up on the screen first
-        Splash splash = new Splash(10000);
+        SplashScreen splash = new SplashScreen(10000);
         // Normally, we'd call splash.showSplash() and get on with the program.
         // But, since this is only a test...
         splash.showSplashAndExit();

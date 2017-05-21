@@ -1,7 +1,9 @@
 package slythr;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import stardust.GlobalGamestate;
+
+import java.awt.*;
+
 
 public class Rect extends Primitive {
 
@@ -12,13 +14,28 @@ public class Rect extends Primitive {
 	public int origin_y = 0;
 	public int height = 20;
 	public int width = 20;
-	public int center_x = origin_x + (width / 2);
-	public int center_y = origin_y + (height / 2);
-	public int[] physics_velocity = { 0, 0 };
+	public int physics_velocity_x = 0;
+	public int physics_velocity_y = 0;
+	public boolean enabled = true;
+	private GlobalGamestate globalGamestate;
+	public Animation self_animation;
+	public boolean sprite = false;
+	public int sprite_step;
+	public String label = "a rect object";
 
-	public Rect() {
+
+
+
+
+	public Rect(GlobalGamestate gamestate) {
+		globalGamestate = gamestate;
 
 	}
+
+
+
+
+
 
 	public void setAttributes(int x, int y, int Height, int Width, int r, int g, int b) {
 
@@ -29,6 +46,10 @@ public class Rect extends Primitive {
 		color_r = r;
 		color_g = g;
 		color_b = b;
+		center_x = x - (width / 2);
+		center_y = y - (height / 2);
+		sprite_step = 0;
+
 
 		/*
 		System.out.print("the attributes of object ");
@@ -41,18 +62,40 @@ public class Rect extends Primitive {
 
 	}
 
+
+
 	public void draw(Graphics g) {
 
 		// System.out.println("drawing from rect");
-		g.setColor(new Color(color_r, color_g, color_b));
-		g.fillRect(origin_x, origin_y, width, height);
-
+		if (enabled) {
+			g.setColor(new Color(color_r, color_g, color_b));
+			g.fillRect(origin_x, origin_y, width, height);
+		}
 	}
 
 	public void setColor(int R, int G, int B) {
 		color_r = R;
 		color_g = G;
 		color_b = B;
+	}
+
+
+
+	public void setPhysics_velocity_x(int magnitude){
+		physics_velocity_x = magnitude;
+	}
+
+	public void setPhysics_velocity_y(int magnitude){
+		physics_velocity_y = magnitude;
+	}
+
+	public void setPhysics_velocity(int x, int y){
+		this.physics_velocity_x = x;
+		this.physics_velocity_y = y;
+	}
+
+	public int[] getPhysics_Velocity(){
+		return new int[] {this.physics_velocity_x, this.physics_velocity_y};
 	}
 
 	public void setpos(int x, int y) {
@@ -65,6 +108,9 @@ public class Rect extends Primitive {
 		origin_y = origin_y + y;
 	}
 
+	public void move(double time){
+		setpos(getpos()[0] + (int)(physics_velocity_x * time), getpos()[1] + (int)(physics_velocity_y * time));
+	}
 	public int[] getpos() {
 		int[] coords = { origin_x, origin_y };
 		return coords;
@@ -79,15 +125,23 @@ public class Rect extends Primitive {
 	}
 
 	public int getHeight() {
-		return height;
+		return this.height;
 	}
 
 	public int getWidth() {
-		return width;
+		return this.width;
 	}
 
 	public void centerx(int x) {
 		origin_x = x - (width / 2);
+	}
+
+	public int centerx(){
+		return origin_x + (width / 2);
+	}
+
+	public int centery(){
+		return origin_y + (height / 2);
 	}
 
 	public void centery(int y) {
@@ -101,4 +155,45 @@ public class Rect extends Primitive {
 	public void setHeight(int value) {
 		height = value;
 	}
+
+	public void enable(){
+		this.enabled = true;
+	}
+
+	public void disable(){
+		this.enabled = false;
+	}
+
+	public void toggle() {
+        this.enabled = !enabled;
+	}
+
+	public int bind_Animation(Animation anim){
+		self_animation = anim;
+		self_animation.setTarget(this);
+		return 1;
+	}
+
+	public void make_Sprite(){
+		sprite = true;
+	}
+
+	public int sprite_Step(int stepby){
+		sprite_step = sprite_step + 1;
+		return sprite_step;
+	}
+
+	public void reset_sprite_animation(){
+		sprite_step = 0;
+	}
+
+	public int get_step(){
+		return sprite_step;
+	}
+
+	public void setLabel(String identifier){
+		label = identifier;
+	}
+
+
 }

@@ -8,6 +8,7 @@ public class SFont extends Resource {
 	int style;
 	String name;
 
+
 	public SFont(int Style, String Name) {
 
 		style = Font.PLAIN;

@@ -1,44 +1,152 @@
 package slythr;
 
-import slythr.Resource;
+import stardust.GlobalGamestate;
+import stardust.MainPane;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 
-public class Text extends Primitive {
+//todo implement physics for text
+
+public class Text extends Primitive{
 
     public String self_content;
-	Font use_font;
-	Resource self_font;// = new slythr.SFont(Font.BOLD, "Serif");
-	Color self_color = Color.black;
-	int origin_x = 0;
-	int origin_y = 0;
-	int self_size;
+	public Font use_font;
+	public Resource self_font;// = new slythr.SFont(Font.BOLD, "Serif");
+	public Color self_color = Color.white;
+	public int origin_x = 0;
+	public int origin_y = 0;
+	public int self_size;
 	public Graphics graph;
+	public boolean enabled = true;
+	FontMetrics fontmet;
+	GlobalGamestate globalGamestate;
+	public Primitive bounding_box;
+	public String type = "text";
+	public String label = "a text object";
+	public Rectangle bounding_rect;
 
-	public Text(String content, int size) {
+
+
+
+
+
+	public int height;
+	public int width;
+
+	public Text(String content, int size, Graphics g, GlobalGamestate gamestate) {
+		globalGamestate = gamestate;
 		self_font = new SFont(Font.ITALIC, "Serif");
 		self_content = content;
 		self_size = size;
+		bounding_box = new Rect(globalGamestate);
+		bounding_box.setAttributes(this.getpos()[0], this.getpos()[1],20, 20, 0,0,0);
+		bounding_box.setpos(origin_x, origin_y);
+        if (g != null){
+//            fontmet = MainMenuPane.g.getFontMetrics();
+//            bounding_box = fontmet.getStringBounds(self_content, g);
+  //          height = (int) bounding_box.getHeight();
+    //        width = (int) bounding_box.getWidth();
+			fontmet = g.getFontMetrics(self_font.getFont(self_size));
+			width = fontmet.stringWidth(self_content);
+			height = fontmet.getHeight();
+
+
+        } else {
+        	//pass;
+        }
+        GlobalGamestate.mouse_pos_list.add(this);
+
+
+
+
+
+
+
 	}
+
+
+
+
+
+	public void update(Graphics g){
+
+
+		fontmet = g.getFontMetrics(self_font.getFont(self_size));
+
+		Graphics2D g2 = (Graphics2D) g;
+		FontRenderContext frc = g2.getFontRenderContext();
+		GlyphVector gv = g2.getFont().createGlyphVector(frc, self_content);
+		bounding_rect = gv.getPixelBounds(frc, (float) origin_x, (float) origin_y);
+
+
+
+		bounding_box.setWidth(fontmet.stringWidth(self_content));
+		bounding_box.setHeight(((int) bounding_rect.getHeight()));
+		bounding_box.setpos(this.getpos()[0], this.getpos()[1] - bounding_box.getHeight());
+	}
+
+	public void centerx(int x, Graphics g){
+		update(g);
+		origin_x = x - bounding_box.getWidth() / 2;
+	}
+
+
 
 	public String getSelf_content(){
 	    return self_content;
     }
 
+     //todo -- make these methods work
+	public int getHeight() {
+
+		return height;
+	}
+    public int getWidth(){
+
+		return width;
+    }
+
+    public int[] getPos(){
+        int coords[] = {origin_x, origin_y};
+        return coords;
+    }
+
+    public boolean isClicked(){
+    	try {
+			if (new Physics(globalGamestate).pointInObj(MainPane.evar_mousepos[0], MainPane.evar_mousepos[1], this)) {
+				return true;
+			}
+		} catch (java.lang.NullPointerException e){
+    		return false;
+		}
+			return false;
+	}
+
 	public void textAttributes(String content, SFont font, Color color, int X, int Y) {
 
-		self_content = content;
-		self_font = font;
-		self_color = color;
-		origin_x = X;
-		origin_y = Y;
+        self_content = content;
+        self_font = font;
+        self_color = color;
+        origin_x = X;
+        origin_y = Y;
+    }
+
+    public void emptyOnClick(){
+    	//pass
+	}
+
+	public void setColor(int r, int g, int b){
+    	self_color = new Color(r, g, b);
 	}
 
 	public void draw(Graphics g) {
-		g.setFont(self_font.getFont(self_size));
-		g.setColor(self_color);
-		g.drawString(self_content, origin_x, origin_y);
-
+		if (enabled) {
+			g.setFont(self_font.getFont(self_size));
+			g.setColor(self_color);
+			g.drawString(self_content, origin_x, origin_y);
+		}
 	}
 
 	public int getSize(){
@@ -65,6 +173,31 @@ public class Text extends Primitive {
 
 	public void setText(String content) {
 		self_content = content;
+	}
+
+	public void enable(){
+		enabled = true;
+	}
+
+	public void disable(){
+		enabled = false;
+	}
+
+	public void toggle() {
+		enabled = !enabled;
+	}
+
+	public void setContent(String content){
+		self_content = content;
+	}
+
+	public Primitive getBounding_box(){
+		return bounding_box;
+	}
+
+	public void draw_bounding_box(Graphics g){
+		g.setColor(new Color(0, 255, 0));
+		g.drawRect(this.getBounding_box().getpos()[0], this.getBounding_box().getpos()[1], this.getBounding_box().getWidth(), this.getBounding_box().getHeight());
 	}
 }
 

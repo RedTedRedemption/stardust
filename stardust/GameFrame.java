@@ -1,7 +1,3 @@
-//IGNORE THIS!! ITS BASICALLY A TEMPLATE FOR FRAMES. GO SEE MAINMENUPANE
-
-
-
 package stardust;
 
 import javax.swing.*;
@@ -19,6 +15,7 @@ public class GameFrame extends JPanel implements KeyListener {
     boolean newframe = false;
     boolean framevar_runme = true;
     int evar_framedelay;
+    GlobalGamestate globalGamestate;
 
     //generate the default stack
     Stack rendStack = new Stack();
@@ -26,7 +23,7 @@ public class GameFrame extends JPanel implements KeyListener {
     //create resources
     //Primitive ship = new ClosedPoly();
     //Primitive testtext = new Text("asdf", 36);
-    Primitive ship = new Rect();
+    Primitive ship = new Rect(globalGamestate);
 
 
 
@@ -44,7 +41,7 @@ public class GameFrame extends JPanel implements KeyListener {
 
 
 
-        Physics phys = new Physics();
+        Physics phys = new Physics(globalGamestate);
 
 
         addKeyListener(this);

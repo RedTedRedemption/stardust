@@ -1,7 +1,5 @@
 package slythr;
 
-import slythr.Resource;
-
 import java.awt.*;
 
 public class Primitive {
@@ -12,8 +10,27 @@ public class Primitive {
 	public int origin_x;
 	public int origin_y;
 	public int[] origin;
+	public int center_x;
+	public int center_y;
+	public int self_size;
+	public int physics_velocity_x;
+	public int physics_velocity_y;
+	public boolean enabled = true;
+	public Font use_font;
+	public Animation self_animation;
+	public boolean sprite;
+	public int sprite_step;
+	public Primitive bounding_box;
+	public String type;
+	public String label;
+
 
 	// primitives
+
+	public void update(Graphics g){
+
+	}
+
 	public void draw(Graphics g) {
 		System.out.println("drawing from primitive");
 	}
@@ -28,6 +45,10 @@ public class Primitive {
 
 	}
 
+	public void setImage(String path) throws java.io.IOException {
+
+	}
+
 	public void setAttributes(int x, int y, int Height, int Width, int r, int g, int b) {
 		// sets attributes of primitive object
 	}
@@ -36,13 +57,28 @@ public class Primitive {
 		// sets origin to align center x to this coordinate
 
 	}
+	public void centerx(int x, Graphics g) {
+	}
+
+	public int centerx(){
+		return 1;
+	}
+
 
 	public void centery(int y) {
 		// sets origin to align center y to this coordinate
 	}
 
+	public int centery(){
+		return 1;
+	}
+
 	public void setSFont(Resource hellofont) {
 
+	}
+
+	public int[] getPhysics_velocity(){
+		return physics_velocity;
 	}
 
 	public void move(int x, int y) {
@@ -77,7 +113,7 @@ public class Primitive {
 
 	}
 
-	public int getHeight() {
+	public int getHeight(){
 		return -1;
 	}
 
@@ -104,5 +140,73 @@ public class Primitive {
 
 	public String getSelfContent() {
 		return "error, wrong scope for getSelfContent call";
+	}
+
+	public void move(double time){
+		//setpos(getpos()[0] + physics_velocity_x, getpos()[1] + physics_velocity_y);
+
+	}
+
+	public void setPhysics_velocity_x(int magnitude){
+		//physics_velocity_x = magnitude;
+	}
+
+	public void setPhysics_velocity_y(int magnitude){
+		//physics_velocity_y = magnitude;
+	}
+
+	public void setPhysics_velocity(int x, int y){
+		//physics_velocity_x = x;
+		//physics_velocity_y = y;
+	}
+
+	public void enable(){}
+	public void disable(){
+
+	}
+	public void toggle() {
+	}
+
+//	public void update(){
+//
+//	}
+
+	public boolean isClicked(){
+		return false;
+	}
+
+	public int bind_Animation(Animation anim){
+		return -1;
+	}
+
+	public void make_Sprite(){
+		sprite = true;
+	}
+
+	public int sprite_Step(int stepby){
+		return -1;
+	}
+
+	public int getSprite_step(){
+		return -1;
+	}
+	public int get_step(){
+		return -1;
+	}
+
+	public void reset_sprite_animation(){
+		return;
+	}
+
+	public Primitive getBounding_box(){
+		return new Primitive();
+	}
+
+	public void draw_bounding_box(Graphics g){
+
+	}
+
+	public void setLabel(String identifier){
+		label = identifier;
 	}
 }

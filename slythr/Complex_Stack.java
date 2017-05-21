@@ -4,24 +4,24 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Stack {
+public class Complex_Stack {
 
-	ArrayList<Primitive> stack = new ArrayList<Primitive>();
+	public List<Complex> stack = new ArrayList<Complex>();
 
 
-	public Stack() {
+	public Complex_Stack() {
 		// java.util.List = new java.util.ArrayList<Object>()
 
 		// System.out.println("stack has been created!");
 	}
 
-	public void add(Primitive obj) {
+	public void add(Complex obj) {
 		stack.add(obj);
 
 	}
 
 	public void printMe() {
-		for (Primitive tout : stack) {
+		for (Complex tout : stack) {
 			System.out.println(tout);
 		}
 
@@ -36,20 +36,16 @@ public class Stack {
 	}
 
 	public void draw(Graphics g) {
-		for (Primitive obj : stack) {
-			try {
-				obj.draw(g);
-			} catch (java.util.ConcurrentModificationException e) {
-				//pass; suppresses error message
-			}
+		for (Complex obj : stack) {
+			obj.draw(g);
 
 		}
 	}
 
-	public void remove(Primitive obj) {
+	public void remove(Complex obj) {
 	    try {
             stack.remove(stack.indexOf(obj));
-        } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
 	        System.out.println("Failed to remove item from stack: java.lang.ArrayIndexOutOfBoundsException << error handled sucessfully");
         }
 
@@ -57,10 +53,10 @@ public class Stack {
         //descrepencies and update speeds resulting in multiple attempts to remove an object -- shouldnt produce static semantics error, but keep an eye out
 	}
 
-	public Stack makeStack(List<Primitive> list) {
+	public Complex_Stack makeStack(List<Complex> list) {
 		//call <target> = makeStack(<origin_list>) to effectively convert a list into a stack and store at target
-		Stack newStack = new Stack();
-		for (Primitive obj : list) {
+		Complex_Stack newStack = new Complex_Stack();
+		for (Complex obj : list) {
 			newStack.add(obj);
 		}
 		return newStack;
@@ -73,29 +69,30 @@ public class Stack {
 		stack.clear();
 	}
 
-	public void add(Stack addme){
-		for (Primitive obj : addme.makeArrayList()){
+	public void add(Complex_Stack addme){
+		for (Complex obj : addme.stack){
 			stack.add(obj);
 		}
 	}
 
 	//public void add(ArrayList<Primitive> addme)
 
-	public ArrayList<Primitive> makeArrayList(){
-		ArrayList<Primitive> tout = new ArrayList<>();
-		for (Primitive obj : stack){
-			tout.add(obj);
-		}
-		return tout;
-	}
+//	public ArrayList<Primitive> makeArrayList(){
+//		ArrayList<Primitive> tout = new ArrayList<>();
+//		for (Complex obj : stack){
+//			tout.add(obj);
+//		}
+//		return tout;
+}
 
 	//public Stack dump(){
         //empty for now, should return the stack (or an ArrayList?) and then clear it...will need to use temporary storage
         //buffer (i.e. store stack in temp, clear stack, return temp
+//	public Object[] toArray(){
+//		return stack.toArray();
+//	}
+
 	//}
 
-	public Object[] toArray(){
-		return stack.toArray();
-	}
 
-}
+
