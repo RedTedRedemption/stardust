@@ -22,11 +22,6 @@ public class GlobalGamestate {
 
     public static double time = 1;
 
-    public static int statevar_saveslot;
-
-    public static boolean statevar_alwaysgod = false;
-
-
     public static ArrayList<Object> mouse_pos_list= new ArrayList<>();
 
     public static int statevar_score = 0;
@@ -48,11 +43,7 @@ public class GlobalGamestate {
     }
 
     public static void dealDamage_player(int damage){
-<<<<<<< HEAD
-        if (!statevar_god && !statevar_alwaysgod) {
-=======
-        if (!statevar_god || !statevar_alwaysgod) {
->>>>>>> origin/master
+        if (!statevar_god) {
             statevar_playerHealth = statevar_playerHealth - damage;
             MainPane.blink_animation.start();
             MainPane.invuln.start();
