@@ -57,7 +57,11 @@ public class AsteroidExplodeParticle extends Particle {
 
     public static void draw(Graphics g){
         for (AsteroidExplodeParticle instance : particlearray){
-            instance.self_primitive.draw(g);
+            try {
+                instance.self_primitive.draw(g);
+            } catch (java.util.ConcurrentModificationException e){
+                //pass;  suppresses error message
+            }
         }
     }
 

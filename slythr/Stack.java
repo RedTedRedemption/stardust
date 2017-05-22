@@ -37,7 +37,11 @@ public class Stack {
 
 	public void draw(Graphics g) {
 		for (Primitive obj : stack) {
-			obj.draw(g);
+			try {
+				obj.draw(g);
+			} catch (java.util.ConcurrentModificationException e) {
+				//pass; suppresses error message
+			}
 
 		}
 	}

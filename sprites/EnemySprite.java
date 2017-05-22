@@ -1,11 +1,8 @@
 package sprites;
 
-import javafx.animation.AnimationBuilder;
 import slythr.*;
 import stardust.GlobalGamestate;
-import stardust.MainPane;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -71,6 +68,7 @@ public class EnemySprite{
         new_instance.self_animation = new Animation(new_instance.self_primitive, "offset", animation_points);
         animation_buffer.add(new_instance.self_animation);
         new_instance.self_animation.start();
+        new_instance.self_animation.loopme(true);
 
 
         spritelist.add(new_instance);
@@ -81,20 +79,20 @@ public class EnemySprite{
     public static void behave(Primitive ship) {
 
         try {
-            for (EnemySprite me : spritelist) {
-                if (Physics.doObjectsCollide(me.self_primitive, ship)) {
+            for (EnemySprite instance : spritelist) {
+                if (Physics.doObjectsCollide(instance.self_primitive, ship)) {
                     System.out.println("impact, dying");
-                    kill(me);
+                    kill(instance);
                     GlobalGamestate.dealDamage_player(1);
                 }
 
-                if (me.self_primitive.getpos()[1] > hostFrame.getHeight()) {
-                    kill(me);
+                if (instance.self_primitive.getpos()[1] > hostFrame.getHeight()) {
+                    kill(instance);
                 }
                 try {
                     for (BulletSprite bullet : BulletSprite.spritelist) {
-                        if (Physics.doObjectsCollide(me.self_primitive, bullet.self_primitive)) {
-                            kill(me);
+                        if (Physics.doObjectsCollide(instance.self_primitive, bullet.self_primitive)) {
+                            kill(instance);
                             BulletSprite.kill(bullet);
                             GlobalGamestate.award(gamevar_killreward);
                         }

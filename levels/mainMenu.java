@@ -3,6 +3,7 @@ package levels;
 
 import slythr.*;
 import stardust.GlobalGamestate;
+import stardust.MainPane;
 
 import java.awt.*;
 
@@ -15,12 +16,14 @@ public class mainMenu {
     public Primitive start;
     public Primitive start_bounding_box;
     public Primitive title;
+
     private GlobalGamestate globalGamestate;
 
 
     public mainMenu(GlobalGamestate gamestate, Graphics g){
         title = new Text("Main Menu", 36, g, gamestate);
         start = new Text("New Game", 24, g, gamestate);
+
         globalGamestate = gamestate;
         start_bounding_box = new Rect(globalGamestate);
         start_bounding_box.setHeight(20);
@@ -39,6 +42,7 @@ public class mainMenu {
         start_bounding_box.setpos(start.getpos()[0], start.getpos()[1] - start_bounding_box.getHeight());
         myStack.add(title);
         myStack.add(start);
+        myStack.add(MainPane.continue_text);
 
     }
 

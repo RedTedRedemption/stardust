@@ -24,6 +24,7 @@ public class AsteroidSprite {
     private static Random rand = new Random();
     public Primitive self_primitive;
     static int spares = 0;
+    int statevar_myhealth = 2;
 
     static ArrayList<AsteroidSprite> spritelist = new ArrayList<>();
 
@@ -79,22 +80,24 @@ public class AsteroidSprite {
 
     public static void behave(Primitive player_ship, BulletSprite bullets){
         try {
-            for (AsteroidSprite obj : spritelist) {
+            for (AsteroidSprite instance : spritelist) {
 
-                if (obj.self_primitive.centerx() > host_frame.getHeight()) {
-                    spritelist.remove(obj);
+                if (instance.statevar_myhealth <= 0){
+                    AsteroidExplodeParticle.instantiate(instance.self_primitive.getpos());
+                    kill(instance);
                 }
-                if (Physics.doObjectsCollide(obj.self_primitive, player_ship)) {
+                if (instance.self_primitive.centerx() > host_frame.getHeight()) {
+                    spritelist.remove(instance);
+                }
+                if (Physics.doObjectsCollide(instance.self_primitive, player_ship)) {
                     GlobalGamestate.dealDamage_player(1);
-                    kill(obj);
-                    AsteroidExplodeParticle.instantiate(obj.self_primitive.getpos());
+                    kill(instance);
+                    AsteroidExplodeParticle.instantiate(instance.self_primitive.getpos());
                 }
                 for (BulletSprite bullet : bullets.spritelist) {
-                    if (Physics.doObjectsCollide(obj.self_primitive, bullet.self_primitive)) {
-                        kill(obj);
+                    if (Physics.doObjectsCollide(instance.self_primitive, bullet.self_primitive)) {
+                        instance.statevar_myhealth = instance.statevar_myhealth - bullet.gamevar_damage_dealt;
                         bullets.kill(bullet);
-                        AsteroidExplodeParticle.instantiate(obj.self_primitive.getpos());
-
                     }
                 }
             }

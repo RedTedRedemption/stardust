@@ -24,7 +24,7 @@ public class Level {
 
     String source_file;
     public ArrayList<String> sequence = new ArrayList<String>();
-    int step = 0;
+    public int step = 0;
     Frame host_frame;
     GlobalGamestate globalGamestate;
     String addme;
@@ -71,6 +71,7 @@ public class Level {
         String spawnline = sequence.get(step);
         //System.out.println(spawnline);
         //System.out.println("instruction is " + spawnline);
+
         step = step + 1;
         try {
             if (spawnline.contains("enemy")) {
@@ -115,9 +116,6 @@ public class Level {
             if (spawnline.contains("arm_weapons")) {
                 GlobalGamestate.arm_weapons();
             }
-            if (spawnline.contains("savegame")) {
-                SaveGame.save("/Users/teddy/Desktop/ij/stardust/src/stardust/quicksave");
-            }
             if (spawnline.contains("change_level")) {
                 String[] splitted_spawnline = spawnline.split(" ");
                 step = 0;
@@ -155,6 +153,13 @@ public class Level {
             if (spawnline.contains("set_cutscene_back")){
                 String[] splitted_spawnline = spawnline.split(" ");
                 MainPane.cutscene_background.setImage(splitted_spawnline[1]);
+            }
+            if (spawnline.contains("quicksave")){
+                SaveGame.save(GlobalGamestate.localizePath((FileSystems.getDefault().getPath("quicksav.sav")).toString()), source_file, step);
+            }
+            if (spawnline.contains("savegame")){
+                String slotfilename = "slot_" + Integer.toString(MainPane.cvar_saveslot) + ".sav";
+                SaveGame.save(GlobalGamestate.localizePath((FileSystems.getDefault().getPath(slotfilename).toString())), source_file, step);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(MainPane.host_frame,"The level reader has encountered an error while reading "

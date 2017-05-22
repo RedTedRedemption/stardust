@@ -16,6 +16,9 @@ public class BulletSprite {
 
     Primitive self_primitive;
 
+    public int gamevar_damage_dealt= 1;
+
+
     public static ArrayList<BulletSprite> spritelist = new ArrayList<>();
 
     public BulletSprite(){
@@ -33,7 +36,7 @@ public class BulletSprite {
         new_instance.self_primitive.setHeight(10);
         new_instance.self_primitive.setWidth(5);
         spritelist.add(new_instance);
-        new_instance.self_primitive.setPhysics_velocity_y(-10);
+        new_instance.self_primitive.setPhysics_velocity_y(-GlobalGamestate.gamevar_bulletspeed);
 
 
 

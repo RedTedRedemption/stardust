@@ -10,10 +10,11 @@ public class Animation {
 
     public ArrayList<int[]> bread = new ArrayList<>();
     public Primitive target;
-    int step = 0;
+    public int step = 0;
     public String mode;
     public boolean enabled = false;
     public SlythrAction action;
+    public boolean loop = false;
 
     public Animation(Primitive Target, String Mode, ArrayList<int[]> point_array){
         for (int[] a : point_array){
@@ -23,14 +24,25 @@ public class Animation {
         mode = Mode;
     }
 
-    public void bind_Action(SlythrAction slaction){
-        action = slaction;
+    public void loopme(boolean status){
+        loop = status;
+    }
+
+    public void bind_Action(SlythrAction slythrAction){
+        action = slythrAction;
     }
 
     public boolean Step() {
         if (enabled) {
             try {
                 step = step + 1;
+                if (step >= bread.size()) {
+                    if (loop) {
+                        step = 0;
+                    } else {
+                        enabled = false;
+                    }
+                }
                 if (mode.equals("keyframe")) {
                     target.setpos(bread.get(step)[0], bread.get(step)[1]);
                     return true;
