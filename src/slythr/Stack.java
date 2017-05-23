@@ -1,5 +1,7 @@
 package slythr;
 
+import stardust.Main;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,14 @@ public class Stack {
 
 	public void draw(Graphics g) {
 		for (Primitive obj : stack) {
-			obj.draw(g);
+			try {
+				obj.draw(g);
+			} catch (java.util.ConcurrentModificationException e) {
+				//pass; suppresses error message
+			}
+			if (Main.evar_drawboundingboxes){
+				obj.draw_bounding_box(g);
+			}
 
 		}
 	}

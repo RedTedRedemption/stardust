@@ -3,7 +3,6 @@ package slythr;
 import stardust.GlobalGamestate;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Created by teddy on 4/21/17.
@@ -19,6 +18,7 @@ public class Complex {
     public String line_1;
     public String line_2;
     public String line_3;
+    public Primitive continue_guage;
 
     public Stack elements = new Stack();
 
@@ -28,6 +28,14 @@ public class Complex {
 
     public void add(Primitive element){
         elements.add(element);
+    }
+
+    public Primitive getContinue_guage(){
+        return null;
+    }
+
+    public Primitive getInner_rect(){
+        return null;
     }
 
     public Primitive getOuter_rect(){

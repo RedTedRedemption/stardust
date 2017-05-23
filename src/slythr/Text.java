@@ -1,14 +1,11 @@
 package slythr;
 
-import slythr.Resource;
 import stardust.GlobalGamestate;
 import stardust.MainPane;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
-import java.awt.geom.Rectangle2D;
-import java.lang.reflect.Method;
 
 //todo implement physics for text
 
@@ -75,20 +72,19 @@ public class Text extends Primitive{
 
 	public void update(Graphics g){
 
+
+		fontmet = g.getFontMetrics(self_font.getFont(self_size));
+
 		Graphics2D g2 = (Graphics2D) g;
 		FontRenderContext frc = g2.getFontRenderContext();
 		GlyphVector gv = g2.getFont().createGlyphVector(frc, self_content);
 		bounding_rect = gv.getPixelBounds(frc, (float) origin_x, (float) origin_y);
 
 
-		width = (int) bounding_rect.getWidth();
-		height = (int) bounding_rect.getHeight();
 
-
-
-		bounding_box.setpos(this.getpos()[0], this.getpos()[1] - height);
-		bounding_box.setWidth(width);
-		bounding_box.setHeight(height);
+		bounding_box.setWidth(fontmet.stringWidth(self_content));
+		bounding_box.setHeight(fontmet.getHeight());
+		bounding_box.setpos(this.getpos()[0], this.getpos()[1] - bounding_box.getHeight());
 	}
 
 	public void centerx(int x, Graphics g){

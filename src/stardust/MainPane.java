@@ -43,6 +43,12 @@ public class MainPane extends JPanel{
     static boolean statevar_showingtextbox = false;
     static Animation invuln;
 
+    public static int drawcount = 0;
+
+
+    public static int cvar_saveslot;
+
+
 
     public static int[] evar_mousepos = {0, 0};
 
@@ -58,6 +64,9 @@ public class MainPane extends JPanel{
     public static Primitive resume_text;
     static Primitive health_text;
 
+
+    public static Primitive continue_text;
+
     public static Primitive quit_text;
 
     public static Primitive cutscene_background;
@@ -66,13 +75,16 @@ public class MainPane extends JPanel{
     static Primitive healthblit2;
     static Primitive healthblit3;
 
+    public static Primitive go_back_text;
+
+
 
     static Primitive cursor;
 
     public static boolean statevar_timestop = false;
 
     static boolean statevar_firing = false;
-    static int gamevar_firecooldown = 10;
+    static int gamevar_firecooldown = 20;
     static int statevar_firetemp = 0;
     static boolean evar_spacekey = false;
 
@@ -138,9 +150,13 @@ public class MainPane extends JPanel{
 
 
 
-    static Primitive title;
-    static Primitive start;
+    static Primitive main_menu_title;
+    static Primitive new_game_text;
     static Primitive exit_text;
+    static Primitive load_text;
+    static Primitive slot_1_text;
+    static Primitive slot_2_text;
+    static Primitive slot_3_text;
     Primitive qexit_text;
 
     Primitive testimage;
@@ -213,7 +229,7 @@ public class MainPane extends JPanel{
 
 
 
-        System.out.println(g);
+
 
         globalGamestate = gamestate;
         rootPane = frame.getRootPane();
@@ -227,8 +243,6 @@ public class MainPane extends JPanel{
 
         menulvl = new mainMenu(gamestate, g);
 
-
-        System.out.println(this.getComponents());
 
 
         addMouseListener(new MouseAdapter() {
@@ -312,6 +326,12 @@ public class MainPane extends JPanel{
         healthblit3.setAttributes(0,0,15,20,0,255,0);
         health_text.setText("Health: ");
         health_text.getBounding_box();
+
+        go_back_text = new Text("Back", 24, g, globalGamestate);
+        go_back_text.setLabel("previous menu");
+        go_back_text.setpos(0, 900);
+
+
 
 
 
@@ -493,8 +513,7 @@ public class MainPane extends JPanel{
                     quit_text.setpos(100, 300);
                     back_to_menu_text.setpos(100, 250);
                     resume_text.setpos(100, 200);
-//                    quit_text.bounding_box.setpos(100, 185);
-//                    quit_text.bounding_box.setWidth(175);
+
                     statevar_paused = true;
                     pauseBuffer.add(rendStack);
                     //todo -- use same pause buffer system for complexes
@@ -610,9 +629,15 @@ public class MainPane extends JPanel{
 
 
 
-        // put all the objects into the rendStack
+        // spawn threads
         Thread gameThread = new Thread(new GameLoop(), "gamethread");
+        Thread fpsThread = new Thread(new FPScounter(), "FPS counter");
+
+        //start threads
         gameThread.start();
+        if (Main.evar_drawfps) {
+            fpsThread.start();
+        }
         repaint();
 
         ActionListener repainter = new ActionListener() {
@@ -636,6 +661,7 @@ public class MainPane extends JPanel{
 
 
     public void paintComponent(Graphics g) {
+        drawcount = drawcount + 1;
         global_g = g;
         g.setColor(Color.black);
         g.fillRect(0, 0, 900, 900);
@@ -654,7 +680,6 @@ public class MainPane extends JPanel{
                     AsteroidExplodeParticle.draw(g);
                     rendStack.draw(g);
                     dialoguebox_stack.draw(g); //temporary solution to complexes rendering during pausetime
-
                 } catch (java.lang.NullPointerException except){
                     //pass
                 }
@@ -666,21 +691,28 @@ public class MainPane extends JPanel{
                 dialoguebox_stack.draw(g);
             }
 
+            FPScounter.fps.draw(g);
+            FPScounter.cps.draw(g);
+
+
+
         }
-        //g.dispose();
-        //buffer_strat.show();
-        //Toolkit.getDefaultToolkit().sync();
+
+//
+
 
     }
 
-    public static void make_text_box(GlobalGamestate gamestate, Graphics graph, String line1, String line2, String line3, Frame frame){
+    public static Complex make_text_box(GlobalGamestate gamestate, Graphics graph, String line1, String line2, String line3, Frame frame){
         try {
             statevar_showingtextbox = true;
             dialoguebox = new Text_Box(globalGamestate, global_g, line1, line2, line3, globalFrame);
             dialoguebox_stack.add(dialoguebox);
+            return dialoguebox;
         } catch (Exception e){
                 JOptionPane.showMessageDialog(new Frame(), e.getStackTrace());
         }
+        return null;
     }
 
 
@@ -697,6 +729,11 @@ public class MainPane extends JPanel{
         rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("pressed ESCAPE"), "pause");
         rootPane.getActionMap().put("pause", MainPane.pause);
     }
+
+
+        //NEWGAME
+
+
 
     static void makeIngame(ArrayList<Primitive> standards) throws IOException {
         System.out.println("entering game...");
@@ -748,6 +785,8 @@ public class MainPane extends JPanel{
         System.out.print("doing other misc setup...");
 
 
+
+
         healthblit1.setpos(globalFrame.getWidth() - (healthblit1.getWidth() + 5), globalFrame.getHeight() - 40);
         healthblit2.setpos(globalFrame.getWidth() - (healthblit2.getWidth() + healthblit1.getWidth() + 10), globalFrame.getHeight() - 40);
         healthblit3.setpos(globalFrame.getWidth() - (healthblit3.getWidth() + healthblit2.getWidth() + healthblit1.getWidth() + 15), globalFrame.getHeight() - 40);
@@ -761,6 +800,84 @@ public class MainPane extends JPanel{
         evar_detectmousepos = false;
 
         System.out.println("done");
+
+        System.out.println("starting test audio track");
+   //     Audio.play("/Users/teddy/Desktop/ij/stardust/out/artifacts/stardust_jar/release 0-2-2/src/sounds/Troll Song.mp3");
+
+
+
+     //CONTINUE GAME
+
+
+
+    }static void makeIngame(ArrayList<Primitive> standards, String savefile) throws IOException {
+        System.out.println("entering game...");
+        System.out.print("loading level...");
+        SaveGame.load(savefile);
+        System.out.println("done");
+        System.out.print("flushing stacks...");
+        rendStack.flush();
+        dialoguebox_stack.flush();
+        System.out.println("done");
+        statevar_spawnEnemies = true;
+        statevar_canpause = true;
+        System.out.print("adding standard stack items to render stack...");
+        for (Primitive obj : standards){
+            rendStack.add(obj);
+        }
+        System.out.println("done");
+        System.out.print("setting up animations...");
+        ArrayList<int[]> blink_dough = new ArrayList<>();
+        for (int i = 0; i <= 2; i++){
+            for (int j = 0; j <= 15; j++){
+                blink_dough.add(new int[] {0, 0});
+            }
+            for (int k = 0; k <= 15; k++){
+                blink_dough.add(new int[] {1, 0});
+            }
+        }
+        ArrayList<int[]> invuln_dough = new ArrayList<>();
+        for (int i = 0; i < 50; i++){
+            invuln_dough.add(new int[] {1, 0});
+        }
+        invuln_dough.add(new int[] {0, 1});
+        invuln = new Animation(ship, "action", invuln_dough);
+        invuln.bind_Action(new SlythrAction() {
+            @Override
+            public void execute() {
+                globalGamestate.statevar_god = true;
+            }
+
+            @Override
+            public void execute2() {
+                globalGamestate.statevar_god = false;
+            }
+        });
+        blink_animation = new Animation(ship, "enabled",  blink_dough);
+        general_animation_buffer.add(blink_animation);
+        general_animation_buffer.add(invuln);
+        System.out.println("done");
+        System.out.print("doing other misc setup...");
+
+
+
+
+        healthblit1.setpos(globalFrame.getWidth() - (healthblit1.getWidth() + 5), globalFrame.getHeight() - 40);
+        healthblit2.setpos(globalFrame.getWidth() - (healthblit2.getWidth() + healthblit1.getWidth() + 10), globalFrame.getHeight() - 40);
+        healthblit3.setpos(globalFrame.getWidth() - (healthblit3.getWidth() + healthblit2.getWidth() + healthblit1.getWidth() + 15), globalFrame.getHeight() - 40);
+
+
+        health_text.setpos(globalFrame.getWidth() - health_text.getBounding_box().getWidth() - ((healthblit1.getWidth() * 3) + 20), globalFrame.getHeight());
+
+        LittleStar.initialize();
+
+
+        evar_detectmousepos = false;
+
+        System.out.println("done");
+
+        System.out.println("starting test audio track");
+   //     Audio.play("/Users/teddy/Desktop/ij/stardust/out/artifacts/stardust_jar/release 0-2-2/src/sounds/Troll Song.mp3");
 
     }
 

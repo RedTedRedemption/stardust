@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class Text_Box extends Complex{
 
     public ArrayList<Primitive> elements = new ArrayList<>();
+    public Primitive continue_guage;
     public Primitive outer_rect;
     public Primitive inner_rect;
     public Primitive text_line1;
@@ -45,6 +46,7 @@ public class Text_Box extends Complex{
         text_line1 = new Text(line_1, 24, g, globalGamestate);
         text_line2 = new Text(line_2, 24, g, globalGamestate);
         text_line3 = new Text(line_3, 24, g, globalGamestate);
+        continue_guage = new Rect(globalGamestate);
         if(g != null) {
             width1 = text_line1.getWidth();
             width2 = text_line2.getWidth();
@@ -59,6 +61,7 @@ public class Text_Box extends Complex{
             elements.clear();
             elements.add(outer_rect);
             elements.add(inner_rect);
+            elements.add(continue_guage);
             elements.add(text_line1);
             elements.add(text_line2);
             elements.add(text_line3);
@@ -76,6 +79,11 @@ public class Text_Box extends Complex{
         inner_rect.centery((host_frame.getWidth() / 2) + 200);
 
 
+        continue_guage.setHeight(5);
+        continue_guage.setColor(0,255,0);
+        continue_guage.setpos(inner_rect.getpos()[0], (inner_rect.getpos()[1] + inner_rect.getHeight() - continue_guage.getHeight()));
+
+
 
 
 
@@ -88,6 +96,14 @@ public class Text_Box extends Complex{
         for (Primitive element: elements){
             element.draw(g);
         }
+    }
+
+    public Primitive getContinue_guage(){
+        return continue_guage;
+    }
+
+    public Primitive getInner_rect(){
+        return inner_rect;
     }
 
     public Primitive getOuter_rect(){

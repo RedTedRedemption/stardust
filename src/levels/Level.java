@@ -1,8 +1,10 @@
 package levels;
 
 import slythr.Complex_Stack;
+import slythr.TextboxThread;
 import sprites.AsteroidSprite;
 import sprites.EnemySprite;
+import stardust.GameLoop;
 import stardust.GlobalGamestate;
 import stardust.MainPane;
 import stardust.SaveGame;
@@ -14,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.ArrayList;
 
 /**
@@ -24,10 +27,11 @@ public class Level {
 
     String source_file;
     public ArrayList<String> sequence = new ArrayList<String>();
-    int step = 0;
+    public int step = 0;
     Frame host_frame;
     GlobalGamestate globalGamestate;
     String addme;
+    boolean runagain = true;
 
 
     public Level(String sourcefile, Frame frame, GlobalGamestate globalgamestate){
@@ -93,9 +97,13 @@ public class Level {
                 return true;
             }
             if (spawnline.contains("textbox")) {
+                GameLoop.dialogue_start = Instant.now();
                 String[] splitted_spawnline = spawnline.split("-");
                 //System.out.println("making a textbox with content " + " " + splitted_spawnline[1] + " " + splitted_spawnline[2] + " " + splitted_spawnline[3]);
-                MainPane.make_text_box(globalGamestate, g, splitted_spawnline[1], splitted_spawnline[2], splitted_spawnline[3], host_frame);
+
+                Thread waitThread = new Thread(new TextboxThread(globalGamestate.gamevar_dialoguedelay, MainPane.make_text_box(globalGamestate, g, splitted_spawnline[1], splitted_spawnline[2], splitted_spawnline[3], host_frame)));
+                waitThread.start();
+                waitThread.join();
                 return true;
             }
             if (spawnline.contains("stop_time")) {
@@ -114,9 +122,6 @@ public class Level {
             }
             if (spawnline.contains("arm_weapons")) {
                 GlobalGamestate.arm_weapons();
-            }
-            if (spawnline.contains("savegame")) {
-                SaveGame.save("/Users/teddy/Desktop/ij/stardust/src/stardust/quicksave");
             }
             if (spawnline.contains("change_level")) {
                 String[] splitted_spawnline = spawnline.split(" ");
@@ -143,21 +148,32 @@ public class Level {
             if (spawnline.contains("clear_text_box")) {
                 MainPane.dialoguebox_stack.flush();
             }
-            if (spawnline.contains("enter_cutscene")){
+            if (spawnline.contains("enter_cutscene")) {
                 MainPane.stoptime();
                 MainPane.cvar_gamestate = 4;
             }
-            if (spawnline.contains("exit_cutscene")){
+            if (spawnline.contains("exit_cutscene")) {
                 MainPane.starttime();
                 MainPane.cvar_gamestate = 1;
                 MainPane.dialoguebox_stack.flush();
             }
-            if (spawnline.contains("set_cutscene_back")){
+            if (spawnline.contains("set_cutscene_back")) {
                 String[] splitted_spawnline = spawnline.split(" ");
                 MainPane.cutscene_background.setImage(splitted_spawnline[1]);
             }
+            if (spawnline.contains("quicksave")) {
+                System.out.print("Quicksaving...");
+
+                System.out.println("done");
+            }
+            if (spawnline.contains("savegame")) {
+                String slotfilename = "slot_" + Integer.toString(MainPane.cvar_saveslot) + ".sav";
+                System.out.print("saving the game to file " + slotfilename + "...");
+                SaveGame.save(GlobalGamestate.localizePath((FileSystems.getDefault().getPath(slotfilename).toString())), source_file, step);
+                System.out.println("done");
+            }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(MainPane.host_frame,"The level reader has encountered an error while reading "
+            JOptionPane.showMessageDialog(MainPane.host_frame, "The level reader has encountered an error while reading "
                                                   + source_file + " \nThis may be an error in the level file, look to line "
                                                   + Integer.toString(step) + ": " + spawnline + "\n\nThe VM threw " + e,
                                           "Level Error",
