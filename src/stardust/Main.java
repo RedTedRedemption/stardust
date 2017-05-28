@@ -2,6 +2,8 @@ package stardust; /**
  * Created by teddy on 3/3/17.
  */
 
+import slythr.SplashThread;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -16,6 +18,7 @@ public class Main {
     static boolean evar_nolog = false;
     static boolean evar_drawfps = false;
     public static boolean evar_drawboundingboxes;
+    public static Thread splashthread;
 
 
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
@@ -28,7 +31,6 @@ public class Main {
                 }
                 if (arg.equals("-god")) {
                     GlobalGamestate.statevar_alwaysgod = true;
-                    System.out.println("GODMODE is on");
                 }
                 if (arg.equals("-nolog")) { //todo - make a better way of doing this
                     evar_nolog = true;
@@ -50,11 +52,14 @@ public class Main {
                 }
             }
             System.out.println();
+            if (GlobalGamestate.statevar_alwaysgod){
+                System.out.println("GODMODE is on");
+            }
 
             System.out.print("gathering system data...");
             GlobalGamestate.getOS();
             System.out.println("done");
-            System.out.print("This program's cwd ");
+            System.out.print("This program's cwd is ");
             System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
             System.out.print("Initializing Driver...");
 
@@ -64,10 +69,8 @@ public class Main {
 
 
             if (!evar_nosplash) {
-                System.out.print("showing splash...");
-                slythr.SplashScreen splash = new slythr.SplashScreen(3000);
-                splash.showSplashAndExit();
-                System.out.println("done");
+                splashthread = new Thread(new SplashThread(), "Splash thread");
+                splashthread.start();
 
             } else {
                 System.out.print("skipping splash...");

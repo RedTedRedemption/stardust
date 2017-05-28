@@ -2,10 +2,12 @@ package slythr;
 
 
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import stardust.GlobalGamestate;
-import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
+import javax.sound.sampled.LineUnavailableException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -23,29 +25,37 @@ public class Audio implements Runnable {
     AudioStream audioStream;
     public boolean playing = false;
     Thread audiothread;
+    String self_path;
+    MediaPlayer mediaPlayer;
 
     Media snd;
 
 
-    public Audio(String path) throws IOException {
-        audiothread = new Thread(this, "slythr audio thread playing " + GlobalGamestate.localizePath(path));
-                // get the sound file as a resource out of my jar file;
-                // the sound file must be in the same directory as this class file.
-                // the input stream portion of this recipe comes from a javaworld.com article.
-            InputStream inputStream = getClass().getResourceAsStream("/src/sounds/Troll Song.mp3");
-            AudioStream audioStream = new AudioStream(inputStream);
-            AudioPlayer.player.start(audioStream);
+    public Audio(String path) throws IOException, LineUnavailableException {
+        String bip = path;
+        self_path = path;
+        Media hit = new Media(new File(bip).toURI().toString());
+        mediaPlayer = new MediaPlayer(hit);
     }
-
     public void run(){
         playing = true;
-        AudioPlayer.player.start(audioStream);
+        mediaPlayer.play();
     }
 
-    public static void play(String path) throws IOException {
-        Thread new_thread = new Thread(new Audio(GlobalGamestate.localizePath(path)), "slythr audio thread playing " + GlobalGamestate.localizePath(path));
-        threads.add(new_thread);
-        new_thread.start();
+    public void play(){
+     //   try {
+            audiothread = new Thread(this, "slythr audio thread playing " + GlobalGamestate.localizePath(self_path));
+            threads.add(audiothread);
+            audiothread.start();
+      //  } catch (IOException e){
+      //      System.out.println("Error starting audio file " + GlobalGamestate.localizePath(self_path));
+      //  }
     }
+
+    public void stop(){
+       mediaPlayer.stop();
+    }
+
+
 
 }

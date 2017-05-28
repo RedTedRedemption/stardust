@@ -4,12 +4,18 @@ import stardust.GlobalGamestate;
 
 import java.awt.*;
 
+/**
+ * Instances of this class render as filled rectangles on the window.
+ */
+
 
 public class Rect extends Primitive {
 
 	public int color_r = 255;
 	public int color_g = 255;
 	public int color_b = 255;
+	int center_x;
+	int center_y;
 	public int origin_x = 0;
 	public int origin_y = 0;
 	public int height = 20;
@@ -24,19 +30,26 @@ public class Rect extends Primitive {
 	public String label = "a rect object";
 
 
-
-
-
+	/**
+	 * Rect constructor.
+	 * @param gamestate An instance of the class GlobalGamestate that will be used to manage the gamestate at large.
+	 */
 	public Rect(GlobalGamestate gamestate) {
 		globalGamestate = gamestate;
 
 	}
 
 
-
-
-
-
+	/**
+	 * Set the attributes of the rect quickly.
+	 * @param x X position of the upper left corner
+	 * @param y Y position of the upper left corner
+	 * @param Height Height of the rect
+	 * @param Width Width of the rect
+	 * @param r Color value for the Red channel between 0 and 255
+	 * @param g Color value for the Green channel between 0 and 255
+	 * @param b Color value for the Blue channel between 0 and 255
+	 */
 	public void setAttributes(int x, int y, int Height, int Width, int r, int g, int b) {
 
 		origin_x = x;
@@ -63,7 +76,10 @@ public class Rect extends Primitive {
 	}
 
 
-
+	/**
+	 * Draws the rectangle. Should rarely be called directly. In most cases this method will be called by a {@link Stack Stack}.
+	 * @param g Graphics instance on which the rect will be drawn.
+	 */
 	public void draw(Graphics g) {
 
 		// System.out.println("drawing from rect");
@@ -73,6 +89,12 @@ public class Rect extends Primitive {
 		}
 	}
 
+	/**
+	 * Sets the color of the rectangle
+	 * @param R Red channel value between 0 and 255
+	 * @param G Green channel value between 0 and 255
+	 * @param B Blue channel value between 0 and 255
+	 */
 	public void setColor(int R, int G, int B) {
 		color_r = R;
 		color_g = G;
@@ -80,37 +102,73 @@ public class Rect extends Primitive {
 	}
 
 
-
+	/**
+	 * Set the X physics velocity of the object
+	 * @param magnitude
+	 */
 	public void setPhysics_velocity_x(int magnitude){
 		physics_velocity_x = magnitude;
 	}
 
+	/**
+	 * Set the Y physics velocity of the object
+	 * @param magnitude
+	 */
 	public void setPhysics_velocity_y(int magnitude){
 		physics_velocity_y = magnitude;
 	}
 
+	/**
+	 * Set the X and Y physics velocity of the object
+	 * @param x
+	 * @param y
+	 */
 	public void setPhysics_velocity(int x, int y){
 		this.physics_velocity_x = x;
 		this.physics_velocity_y = y;
 	}
 
+	/**
+	 * Get the physics velocity of the object
+	 * @return int[2] of physics velocity
+	 */
 	public int[] getPhysics_Velocity(){
 		return new int[] {this.physics_velocity_x, this.physics_velocity_y};
 	}
 
+
+	/**
+	 * Set the object's position
+	 * @param x
+	 * @param y
+	 */
 	public void setpos(int x, int y) {
 		origin_x = x;
 		origin_y = y;
 	}
 
+	/**
+	 * Move the object by an offset
+	 * @param x Velocity along the x axis
+	 * @param y Velocity along the y axis
+	 */
 	public void move(int x, int y) {
 		origin_x = origin_x + x;
 		origin_y = origin_y + y;
 	}
 
+	/**
+	 * Move the object by the distance it would travel in period {@code time} at its current velocity
+	 * @param time Scale the distance by this factor
+	 */
 	public void move(double time){
 		setpos(getpos()[0] + (int)(physics_velocity_x * time), getpos()[1] + (int)(physics_velocity_y * time));
 	}
+
+	/**
+	 * Get the object's position
+	 * @return int[2] of {@code {X, Y}}
+	 */
 	public int[] getpos() {
 		int[] coords = { origin_x, origin_y };
 		return coords;
@@ -132,18 +190,34 @@ public class Rect extends Primitive {
 		return this.width;
 	}
 
+	/**
+	 * Set the X position of the center of the object
+	 * @param x X value for the center of the object
+	 */
 	public void centerx(int x) {
 		origin_x = x - (width / 2);
 	}
 
+	/**
+	 * Get the X position of the center of the object
+	 * @return
+	 */
 	public int centerx(){
 		return origin_x + (width / 2);
 	}
 
+	/**
+	 * Get the Y position of the center of the object
+	 * @return
+	 */
 	public int centery(){
 		return origin_y + (height / 2);
 	}
 
+	/**
+	 * Set the Y position of the center of the object
+	 * @param y Y value for the center of the object
+	 */
 	public void centery(int y) {
 		origin_y = y - (height / 2);
 	}
@@ -168,29 +242,58 @@ public class Rect extends Primitive {
         this.enabled = !enabled;
 	}
 
+	/**
+	 * Bind an animation to this target. Binding occurs in the animation, but the binding action can be called from the Rect as well.
+	 * @param anim
+	 * @return 1 if sucessful
+	 */
 	public int bind_Animation(Animation anim){
 		self_animation = anim;
 		self_animation.setTarget(this);
 		return 1;
 	}
 
+	/**
+	 * Sets the object to act as though it were a Sprite
+	 * @deprecated
+	 */
 	public void make_Sprite(){
 		sprite = true;
 	}
 
+	/**
+	 * Step a sprite animation
+	 * @deprecated
+	 * @param stepby
+	 * @return
+	 */
 	public int sprite_Step(int stepby){
 		sprite_step = sprite_step + 1;
 		return sprite_step;
 	}
 
+	/**
+	 * Reset a sprite animation
+	 * @deprecated
+	 */
 	public void reset_sprite_animation(){
 		sprite_step = 0;
 	}
 
+	/**
+	 * Get the sprite animation's step
+	 * @deprecated
+	 * @return
+	 */
 	public int get_step(){
 		return sprite_step;
 	}
 
+
+	/**
+	 * Give the object a mnemonic name.
+	 * @param identifier A name that the object can be idintified by
+	 */
 	public void setLabel(String identifier){
 		label = identifier;
 	}

@@ -11,6 +11,7 @@ import sprites.BulletSprite;
 import sprites.EnemySprite;
 import sprites.LittleStar;
 
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
@@ -62,6 +63,8 @@ public class GameLoop implements Runnable{
 
 //                Testsprite.instantiate();
 
+
+
             if (MainPane.global_g != null) {
                 MainPane.update_all_text(MainPane.rendStack);
                 MainPane.score.setText(Integer.toString(GlobalGamestate.statevar_score));
@@ -94,6 +97,7 @@ public class GameLoop implements Runnable{
                     //MAIN MENU INITIALIZATION CONTROLLER
                     if (cvar_gamestate == -2 && statevar_menu.equals("main")) {
                         System.out.print("initializing main menu...");
+                        MainPane.white_dove.play();
                         MainPane.go_back_text.disable();
                         //rendStack = menulvl.getMe();
                         MainPane.main_menu_title = new Text("Main Menu", 48, g, globalGamestate);
@@ -273,6 +277,8 @@ public class GameLoop implements Runnable{
                                     e.printStackTrace();
                                 } catch (IOException e) {
                                     e.printStackTrace();
+                                } catch (LineUnavailableException e) {
+                                    e.printStackTrace();
                                 }
                             }
                         }
@@ -331,6 +337,8 @@ public class GameLoop implements Runnable{
                                     e.printStackTrace();
                                 } catch (IOException e) {
                                     e.printStackTrace();
+                                } catch (LineUnavailableException e) {
+                                    e.printStackTrace();
                                 }
 
 
@@ -358,6 +366,8 @@ public class GameLoop implements Runnable{
                                     e.printStackTrace();
                                 } catch (IOException e) {
                                     e.printStackTrace();
+                                } catch (LineUnavailableException e) {
+                                    e.printStackTrace();
                                 }
 
 
@@ -384,6 +394,8 @@ public class GameLoop implements Runnable{
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                 } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (LineUnavailableException e) {
                                     e.printStackTrace();
                                 }
 
@@ -460,6 +472,8 @@ public class GameLoop implements Runnable{
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                 } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (LineUnavailableException e) {
                                     e.printStackTrace();
                                 }
 
@@ -551,6 +565,8 @@ public class GameLoop implements Runnable{
                             e.printStackTrace();
                         } catch (IOException e) {
                             e.printStackTrace();
+                        } catch (LineUnavailableException e) {
+                            e.printStackTrace();
                         }
 
 
@@ -641,6 +657,7 @@ public class GameLoop implements Runnable{
                             AsteroidSprite.flush();
                             LittleStar.flush();
                             BulletSprite.flush();
+                            AsteroidExplodeParticle.flush();
                             GameoverLevel gameover_level = new GameoverLevel(g, globalGamestate);
                             rendStack.add(gameover_level.getMe());
                             if (evar_spacekey) {

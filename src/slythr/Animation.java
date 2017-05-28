@@ -4,11 +4,23 @@ import java.util.ArrayList;
 
 /**
  * Created by teddy on 4/20/17.
+ *
+ * This class is responsible for creation and management of animations for primitives.
+ * Animations have 4 modes: Keyframe, offset, enabled, and action.
+ * Keyframe animations move the target to a point.
+ * Offset animations move the target by a delta
+ * Enabled enables or disables the object's rendering: 1 will cause the object to be rendered, 0 will cause it to not be rendered
+ * action animations execute a slythr action. A bread[0] value of 1 will cause execute() to be called, a bread[1] value of 1 will cause execute2() to be called.
  */
 public class Animation {
 
-
+    /**
+     * Array list containing a set of int[2] objects that indicate what action the animation should act upon the target at a given frame
+     */
     public ArrayList<int[]> bread = new ArrayList<>();
+    /**
+     * A primitive that the animation will act on
+     */
     public Primitive target;
     public int step = 0;
     public String mode;
@@ -24,6 +36,10 @@ public class Animation {
         mode = Mode;
     }
 
+    /**
+     * sets the value of the {@code loop} parameter, which indicates if the animation should play in a loop and restart once it is complete
+     * @param status
+     */
     public void loopme(boolean status){
         loop = status;
     }
@@ -32,6 +48,9 @@ public class Animation {
         action = slythrAction;
     }
 
+    /**
+     * Steps the animation, and executes appropriate code based on mode and the value of bread
+     */
     public boolean Step() {
         if (enabled) {
             try {
@@ -92,6 +111,10 @@ public class Animation {
         }
     }
 
+    /**
+     * add a point to
+     * @param point int[2] object to add to bread
+     */
     public void add(int[] point){
         bread.add(point);
     }

@@ -1,12 +1,14 @@
 package stardust;
 
 import Particles.AsteroidExplodeParticle;
+import javafx.embed.swing.JFXPanel;
 import levels.Level;
 import levels.mainMenu;
 import slythr.*;
 import slythr.Image;
 import sprites.*;
 
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,6 +26,8 @@ public class MainPane extends JPanel{
 
     public static Graphics g;
     public static Graphics global_g;
+
+    public static JFXPanel audiopanel = new JFXPanel();
 
     public BufferStrategy buffer_strat;
     static Stack rendStack = new Stack();
@@ -43,7 +47,18 @@ public class MainPane extends JPanel{
     static boolean statevar_showingtextbox = false;
     static Animation invuln;
 
+
+    static int evar_fpslock = 6;
+
     public static int drawcount = 0;
+
+    long drawstart;
+    int drawwait;
+
+    //AUDIO
+    static Audio test_sound;
+    static Audio moonlight_sonata;
+    static Audio white_dove;
 
 
     public static int cvar_saveslot;
@@ -219,7 +234,7 @@ public class MainPane extends JPanel{
         requestFocus();
     }
 
-    public MainPane(JFrame frame, GlobalGamestate gamestate, BufferStrategy bufferStrategy) throws IOException, InterruptedException {
+    public MainPane(JFrame frame, GlobalGamestate gamestate, BufferStrategy bufferStrategy) throws IOException, InterruptedException, LineUnavailableException {
         super();
         buffer_strat = bufferStrategy;
 
@@ -303,6 +318,10 @@ public class MainPane extends JPanel{
         healthbar.setColor(0, 0,255);
         healthbar.setLabel("player's healthbar");
 
+        //INITIALIZE AUDIO
+        test_sound = new Audio("src/sounds/Troll Song.mp3");
+        moonlight_sonata = new Audio("src/sounds/moonlight_sonata.mp3");
+        white_dove = new Audio ("src/sounds/white_dove.mp4");
 
 
 
@@ -514,6 +533,8 @@ public class MainPane extends JPanel{
                     back_to_menu_text.setpos(100, 250);
                     resume_text.setpos(100, 200);
 
+
+
                     statevar_paused = true;
                     pauseBuffer.add(rendStack);
                     //todo -- use same pause buffer system for complexes
@@ -627,11 +648,18 @@ public class MainPane extends JPanel{
         Testsprite.bind_graphics(global_g);
         Testsprite.bind_host_frame(frame);
 
-
+        //join splash thread
+        if (!Main.evar_nosplash) {
+            System.out.print("Waiting on splash...");
+            Main.splashthread.join();
+            System.out.println("Splash has joined, continuing");
+        }
 
         // spawn threads
         Thread gameThread = new Thread(new GameLoop(), "gamethread");
         Thread fpsThread = new Thread(new FPScounter(), "FPS counter");
+
+
 
         //start threads
         gameThread.start();
@@ -662,6 +690,7 @@ public class MainPane extends JPanel{
 
     public void paintComponent(Graphics g) {
         drawcount = drawcount + 1;
+        drawstart = System.currentTimeMillis();
         global_g = g;
         g.setColor(Color.black);
         g.fillRect(0, 0, 900, 900);
@@ -696,6 +725,18 @@ public class MainPane extends JPanel{
 
 
 
+
+        }
+
+        drawwait = evar_fpslock - (int) (System.currentTimeMillis() - drawstart);
+
+        if (drawwait < 0){
+            drawwait = evar_fpslock;
+        }
+        try {
+            Thread.sleep(drawwait);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
 //
@@ -735,7 +776,8 @@ public class MainPane extends JPanel{
 
 
 
-    static void makeIngame(ArrayList<Primitive> standards) throws IOException {
+    static void makeIngame(ArrayList<Primitive> standards) throws IOException, LineUnavailableException {
+        white_dove.stop();
         System.out.println("entering game...");
         System.out.print("loading level...");
         set_level(Level.get_level_path("testlevel.lvl"));
@@ -799,18 +841,17 @@ public class MainPane extends JPanel{
 
         evar_detectmousepos = false;
 
+
+        moonlight_sonata.play();
         System.out.println("done");
-
-        System.out.println("starting test audio track");
-   //     Audio.play("/Users/teddy/Desktop/ij/stardust/out/artifacts/stardust_jar/release 0-2-2/src/sounds/Troll Song.mp3");
-
 
 
      //CONTINUE GAME
 
 
 
-    }static void makeIngame(ArrayList<Primitive> standards, String savefile) throws IOException {
+    }static void makeIngame(ArrayList<Primitive> standards, String savefile) throws IOException, LineUnavailableException {
+        white_dove.stop();
         System.out.println("entering game...");
         System.out.print("loading level...");
         SaveGame.load(savefile);
@@ -874,11 +915,9 @@ public class MainPane extends JPanel{
 
         evar_detectmousepos = false;
 
+
+        moonlight_sonata.play();
         System.out.println("done");
-
-        System.out.println("starting test audio track");
-   //     Audio.play("/Users/teddy/Desktop/ij/stardust/out/artifacts/stardust_jar/release 0-2-2/src/sounds/Troll Song.mp3");
-
     }
 
     public double double_clock(){

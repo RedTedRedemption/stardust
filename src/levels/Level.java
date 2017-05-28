@@ -132,6 +132,9 @@ public class Level {
             if (spawnline.contains("god_on")) {
                 globalGamestate.god_on();
             }
+            if (spawnline.contains("god_off")) {
+                globalGamestate.statevar_god = false;
+            }
             if (spawnline.equals("wait")) {
                 //pass;
 //        } else {

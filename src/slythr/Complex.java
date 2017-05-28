@@ -6,6 +6,8 @@ import java.awt.*;
 
 /**
  * Created by teddy on 4/21/17.
+ *
+ * Complexes are sets of {@link slythr.Primitive Primitives} that are grouped together. This class has not been finished yet.
  */
 public class Complex {
 
@@ -30,6 +32,10 @@ public class Complex {
         elements.add(element);
     }
 
+    /**
+     * Super method for the {@link Text_Box Text_Box} Complex.
+     * @return
+     */
     public Primitive getContinue_guage(){
         return null;
     }

@@ -4,15 +4,8 @@ package slythr;
  * Created by teddy on 4/28/17.
  */
 
-// SplashScreen.java
-// A simple application to show a title screen in the center of the screen
-// for the amount of time given in the constructor.  This class includes
-// a sample main() method to test the splash screen, but it's meant for use
-// with other applications.
-//
-
+import javax.swing.*;
 import java.awt.*;
-        import javax.swing.*;
 
 public class SplashScreen extends JWindow {
     private int duration;
@@ -20,8 +13,7 @@ public class SplashScreen extends JWindow {
         duration = d;
     }
 
-    // A simple little method to show a title screen in the center
-    // of the screen for the amount of time given in the constructor
+
     public void showSplash() {
         JPanel content = (JPanel)getContentPane();
         content.setBackground(Color.white);
@@ -47,7 +39,6 @@ public class SplashScreen extends JWindow {
         // Display it
         setVisible(true);
 
-        // Wait a little while, maybe while loading resources
         try { Thread.sleep(duration);} catch (Exception e) {}
 
         setVisible(false);
