@@ -80,7 +80,7 @@ public class Rect extends Primitive {
 	 * Draws the rectangle. Should rarely be called directly. In most cases this method will be called by a {@link Stack Stack}.
 	 * @param g Graphics instance on which the rect will be drawn.
 	 */
-	public void draw(Graphics g) {
+	synchronized public void draw(Graphics g) {
 
 		// System.out.println("drawing from rect");
 		if (enabled) {

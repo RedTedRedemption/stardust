@@ -1,6 +1,6 @@
 package slythr;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by teddy on 4/20/17.
@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class Animation_Buffer {
 
-    public ArrayList<Animation> buffer = new ArrayList<>();
+    public CopyOnWriteArrayList<Animation> buffer = new CopyOnWriteArrayList<>();
 
 
     public Animation_Buffer(){
@@ -32,6 +32,10 @@ public class Animation_Buffer {
         for (Animation a : buffer){
             a.Step();
         }
+    }
+
+    public void remove(Animation animation){
+        buffer.remove(buffer.indexOf(animation));
     }
 
 }

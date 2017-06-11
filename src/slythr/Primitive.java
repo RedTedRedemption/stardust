@@ -31,6 +31,10 @@ public class Primitive {
 
 	}
 
+	public void setOpacity(int opacity){
+
+	}
+
 	public void draw(Graphics g) {
 		System.out.println("drawing from primitive");
 	}

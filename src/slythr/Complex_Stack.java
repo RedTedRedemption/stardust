@@ -1,12 +1,12 @@
 package slythr;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Complex_Stack {
 
-	public List<Complex> stack = new ArrayList<Complex>();
+	public CopyOnWriteArrayList<Complex> stack = new CopyOnWriteArrayList<Complex>();
 
 
 	public Complex_Stack() {

@@ -6,6 +6,7 @@ import levels.Level;
 import levels.mainMenu;
 import slythr.*;
 import slythr.Image;
+import slythr.SplashScreen;
 import sprites.*;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -30,7 +31,7 @@ public class MainPane extends JPanel{
     public static JFXPanel audiopanel = new JFXPanel();
 
     public BufferStrategy buffer_strat;
-    static Stack rendStack = new Stack();
+    public static Stack rendStack = new Stack();
     static Stack standardStack = new Stack();
     public static Stack pauseBuffer = new Stack();
     public Complex_Stack complex_pauseBuffer = new Complex_Stack();
@@ -46,6 +47,9 @@ public class MainPane extends JPanel{
     static Frame globalFrame;
     static boolean statevar_showingtextbox = false;
     static Animation invuln;
+    static Animation fadein = new Animation(null, Animation.OPACITY, new ArrayList<int[]>());
+    static Animation fadein2;
+    static Animation fadein3;
 
 
     static int evar_fpslock = 6;
@@ -63,6 +67,10 @@ public class MainPane extends JPanel{
 
     public static int cvar_saveslot;
 
+
+//dough
+static ArrayList<int[]> invuln_dough = new ArrayList<>();
+    static ArrayList<int[]> blink_dough = new ArrayList<>();
 
 
     public static int[] evar_mousepos = {0, 0};
@@ -91,6 +99,8 @@ public class MainPane extends JPanel{
     static Primitive healthblit3;
 
     public static Primitive go_back_text;
+
+    public static Primitive title_text;
 
 
 
@@ -163,15 +173,23 @@ public class MainPane extends JPanel{
         statevar_canpause = true;
     }
 
-
+//MISC PRIMITIVE DECLARATION
 
     static Primitive main_menu_title;
     static Primitive new_game_text;
     static Primitive exit_text;
     static Primitive load_text;
+    static Primitive options_title;
+    static Primitive master_volume_text;
+    static Primitive options_text;
     static Primitive slot_1_text;
     static Primitive slot_2_text;
     static Primitive slot_3_text;
+    static Primitive master_volume_slider;
+    static Primitive master_volume_slider_border;
+    static Primitive delete_saves_text;
+    static Primitive confirm_text;
+
     Primitive qexit_text;
 
     Primitive testimage;
@@ -194,7 +212,8 @@ public class MainPane extends JPanel{
     //other
     static int delay;
     int evar_tickspeed;
-    Timer tmr;
+    Timer repaint_timer;
+    Timer animation_cleaner_timer;
 
 
 
@@ -211,7 +230,7 @@ public class MainPane extends JPanel{
     public static boolean evar_dkey = false;
     public static boolean evar_wkey = false;
     public boolean evar_esckey = false;
-    public static boolean evar_lshiftkey = false;
+    public static boolean evar_qkey = false;
     public static boolean evar_mouseLeft = false;
 
 
@@ -298,7 +317,10 @@ public class MainPane extends JPanel{
 
 
         System.out.println("Entering Main Pane...");
+        SplashScreen.status.setText("entering main pane");
         System.out.print("Creating some resources...");
+        SplashScreen.status.setText("creating some resources");
+        Animation.bind_default_animation_buffer(general_animation_buffer);
         globalFrame = frame;
         ship = new Rect(gamestate);
         health_text = new Text(Integer.toString(GlobalGamestate.statevar_playerHealth), 24, global_g, globalGamestate);
@@ -323,6 +345,32 @@ public class MainPane extends JPanel{
         moonlight_sonata = new Audio("src/sounds/moonlight_sonata.mp3");
         white_dove = new Audio ("src/sounds/white_dove.mp4");
 
+        System.out.print("generating animations...");
+        SplashScreen.status.setText("generating animations");
+        for (int i = 0; i <= 255; i = i + 10) {
+            fadein.add(new int[] {i, 0});
+        }
+        fadein2 = fadein.duplicate_onto();
+        fadein3 = fadein.duplicate_onto();
+
+
+
+        for (int i = 0; i <= 2; i++){
+            for (int j = 0; j <= 15; j++){
+                blink_dough.add(new int[] {0, 0});
+            }
+            for (int k = 0; k <= 15; k++){
+                blink_dough.add(new int[] {1, 0});
+            }
+
+        }
+
+        for (int i = 0; i < 50; i++){
+            invuln_dough.add(new int[] {1, 0});
+        }
+        invuln_dough.add(new int[] {0, 1});
+        System.out.println("done");
+
 
 
 
@@ -335,6 +383,9 @@ public class MainPane extends JPanel{
         score = new Text(Integer.toString(GlobalGamestate.statevar_score), 24, global_g, globalGamestate);
         System.out.println("done");
         score.setpos(0, 15);
+
+        title_text = new Text("empty", 36, global_g, globalGamestate);
+        title_text.disable();
 
 
         healthblit1 = new Rect(globalGamestate);
@@ -355,10 +406,13 @@ public class MainPane extends JPanel{
 
 
 
+
+
         System.out.println("done");
 
 
         System.out.print("adding game resources to standard game stack...");
+        SplashScreen.status.setText("adding game resources to standard game stack");
         standardStack.add(ship);
         standardStack.add(focusguage);
         standardStack.add(score);
@@ -367,11 +421,13 @@ public class MainPane extends JPanel{
         standardStack.add(healthblit1);
         standardStack.add(healthblit2);
         standardStack.add(healthblit3);
+        standardStack.add(title_text);
 
         globalGamestate = gamestate;
         System.out.println("done");
 
         System.out.print("creating cutscene resources and adding them to buffer");
+        SplashScreen.status.setText("creating cutscene resources and adding them to buffer");
 
         cutsceneBuffer.add(cutscene_background);
         cutscene_text_box = new Text_Box(globalGamestate, global_g, "empty", "empty", "empty", host_frame);
@@ -385,11 +441,14 @@ public class MainPane extends JPanel{
         LittleStar.bind_gamestate(globalGamestate);
         LittleStar.bind_host_frame(frame);
         AsteroidExplodeParticle.bind_globalGamestate(globalGamestate);
+        Title.bind_globalGamestate(globalGamestate);
+        Title.bind_graphics(global_g);
 
         //initialize levels
 
         //actions for keybinds
         System.out.print("Setting up actions...");
+        SplashScreen.status.setText("setting up actions");
         Action testAction = new AbstractAction("firingOn"){
             public void actionPerformed(ActionEvent e){
                 System.out.println("performing test action");
@@ -496,17 +555,17 @@ public class MainPane extends JPanel{
             }
         };
 
-        Action lshiftpressed = new AbstractAction() {
+        Action qpressed = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                evar_lshiftkey = true;
+                evar_qkey = true;
             }
         };
 
-        Action lshiftreleased = new AbstractAction() {
+        Action qreleased = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                evar_lshiftkey = false;
+                evar_qkey = false;
             }
         };
 
@@ -523,6 +582,7 @@ public class MainPane extends JPanel{
 
                 if (statevar_canpause) {
                     System.out.println("Pausing game");
+                    Audio.pauseAll();
                     evar_detectmousepos = true;
                     pause_text = new Text("Game Paused", 40, global_g, globalGamestate);
                     back_to_menu_text = new Text("Back to Menu", 24, global_g, globalGamestate);
@@ -544,6 +604,8 @@ public class MainPane extends JPanel{
                     rendStack.add(back_to_menu_text);
                     rendStack.add(resume_text);
 
+
+
                     unbind_pause_bind_pause();
                 }
             }
@@ -553,6 +615,7 @@ public class MainPane extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("unpausing");
+                Audio.resumeAll();
                 statevar_paused = false;
                 rendStack.flush();
                 rendStack.add(pauseBuffer);
@@ -569,6 +632,7 @@ public class MainPane extends JPanel{
 
         //put keybinds
         System.out.print("Setting up keybinds and binding actions...");
+        SplashScreen.status.setText("setting up keybinds and binding actions");
 
         rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("pressed ESCAPE"), "pause");
         rootPane.getActionMap().put("pause", pause);
@@ -609,11 +673,11 @@ public class MainPane extends JPanel{
         rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released R"), "escReleased");
         rootPane.getActionMap().put("escReleased", escReleased);
 
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("pressed Q"), "lshiftpressed");
-        rootPane.getActionMap().put("lshiftpressed", lshiftpressed);
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("pressed Q"), "qpressed");
+        rootPane.getActionMap().put("qpressed", qpressed);
 
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released Q"), "lshiftreleased");
-        rootPane.getActionMap().put("lshiftreleased", lshiftreleased);
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released Q"), "qreleased");
+        rootPane.getActionMap().put("qreleased", qreleased);
 
 
 
@@ -631,8 +695,8 @@ public class MainPane extends JPanel{
 
 
 
-        System.out.println("done");
-        System.out.println("inital setup done. Entering Main Menu");
+
+        SplashScreen.status.setText("binding gamestates, host frames, and buffers");
         BulletSprite.bind_gamestate(globalGamestate);
         EnemySprite.bind_gamestate(globalGamestate);
         EnemySprite.bind_host_frame(frame);
@@ -642,16 +706,24 @@ public class MainPane extends JPanel{
         AsteroidSprite.bind_host_frame(frame);
 
 
+
+
+
+
         long startmili = System.currentTimeMillis();
         Instant startsecond = Instant.now();
 
         Testsprite.bind_graphics(global_g);
         Testsprite.bind_host_frame(frame);
+        System.out.println("done");
+        System.out.println("initial setup done. Entering Main Menu");
+        SplashScreen.status.setText("initial setup done; entering main menu");
 
         //join splash thread
         if (!Main.evar_nosplash) {
             System.out.print("Waiting on splash...");
             Main.splashthread.join();
+            Main.splash_direct_access.splash.setInvisible();
             System.out.println("Splash has joined, continuing");
         }
 
@@ -675,8 +747,20 @@ public class MainPane extends JPanel{
             }
         };
 
-        tmr = new Timer(0, repainter);
-        tmr.start();
+        ActionListener AnimationCleaner = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Animation animation : Animation.default_buffer.buffer) {
+                    if (animation.generic && !animation.enabled){
+                        Animation.default_buffer.remove(animation);
+                    }
+                }
+            }
+        };
+        animation_cleaner_timer = new Timer(5000, AnimationCleaner);
+        animation_cleaner_timer.start();
+        repaint_timer = new Timer(1, repainter);
+        repaint_timer.start();
         delay = 16;
 
 
@@ -794,21 +878,7 @@ public class MainPane extends JPanel{
         }
         System.out.println("done");
         System.out.print("setting up animations...");
-        ArrayList<int[]> blink_dough = new ArrayList<>();
-        for (int i = 0; i <= 2; i++){
-            for (int j = 0; j <= 15; j++){
-                blink_dough.add(new int[] {0, 0});
-            }
-            for (int k = 0; k <= 15; k++){
-                blink_dough.add(new int[] {1, 0});
-            }
-        }
-        ArrayList<int[]> invuln_dough = new ArrayList<>();
-        for (int i = 0; i < 50; i++){
-            invuln_dough.add(new int[] {1, 0});
-        }
-        invuln_dough.add(new int[] {0, 1});
-        invuln = new Animation(ship, "action", invuln_dough);
+        invuln = new Animation(ship, Animation.ACTION, invuln_dough);
         invuln.bind_Action(new SlythrAction() {
             @Override
             public void execute() {
@@ -820,11 +890,18 @@ public class MainPane extends JPanel{
                 globalGamestate.statevar_god = false;
             }
         });
-        blink_animation = new Animation(ship, "enabled",  blink_dough);
+        blink_animation = new Animation(ship, Animation.ENABLED,  blink_dough);
         general_animation_buffer.add(blink_animation);
         general_animation_buffer.add(invuln);
         System.out.println("done");
         System.out.print("doing other misc setup...");
+
+
+
+
+        general_animation_buffer.add(fadein);
+        general_animation_buffer.add(fadein2);
+        general_animation_buffer.add(fadein3);
 
 
 
@@ -868,21 +945,8 @@ public class MainPane extends JPanel{
         }
         System.out.println("done");
         System.out.print("setting up animations...");
-        ArrayList<int[]> blink_dough = new ArrayList<>();
-        for (int i = 0; i <= 2; i++){
-            for (int j = 0; j <= 15; j++){
-                blink_dough.add(new int[] {0, 0});
-            }
-            for (int k = 0; k <= 15; k++){
-                blink_dough.add(new int[] {1, 0});
-            }
-        }
-        ArrayList<int[]> invuln_dough = new ArrayList<>();
-        for (int i = 0; i < 50; i++){
-            invuln_dough.add(new int[] {1, 0});
-        }
-        invuln_dough.add(new int[] {0, 1});
-        invuln = new Animation(ship, "action", invuln_dough);
+
+        invuln = new Animation(ship, Animation.ACTION, invuln_dough);
         invuln.bind_Action(new SlythrAction() {
             @Override
             public void execute() {
@@ -894,7 +958,7 @@ public class MainPane extends JPanel{
                 globalGamestate.statevar_god = false;
             }
         });
-        blink_animation = new Animation(ship, "enabled",  blink_dough);
+        blink_animation = new Animation(ship, Animation.ENABLED,  blink_dough);
         general_animation_buffer.add(blink_animation);
         general_animation_buffer.add(invuln);
         System.out.println("done");

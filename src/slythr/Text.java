@@ -43,11 +43,8 @@ public class Text extends Primitive{
 		bounding_box = new Rect(globalGamestate);
 		bounding_box.setAttributes(this.getpos()[0], this.getpos()[1],20, 20, 0,0,0);
 		bounding_box.setpos(origin_x, origin_y);
+		setLabel(content);
         if (g != null){
-//            fontmet = MainMenuPane.g.getFontMetrics();
-//            bounding_box = fontmet.getStringBounds(self_content, g);
-  //          height = (int) bounding_box.getHeight();
-    //        width = (int) bounding_box.getWidth();
 			fontmet = g.getFontMetrics(self_font.getFont(self_size));
 			width = fontmet.stringWidth(self_content);
 			height = fontmet.getHeight();
@@ -66,6 +63,10 @@ public class Text extends Primitive{
 
 	}
 
+
+	public void setOpacity(int opacity){
+		self_color = new Color(self_color.getRed(), self_color.getGreen(), self_color.getBlue(), opacity);
+	}
 
 
 
@@ -101,11 +102,11 @@ public class Text extends Primitive{
      //todo -- make these methods work
 	public int getHeight() {
 
-		return height;
+		return getBounding_box().getHeight();
 	}
     public int getWidth(){
 
-		return width;
+		return getBounding_box().getWidth();
     }
 
     public int[] getPos(){
@@ -138,13 +139,14 @@ public class Text extends Primitive{
 	}
 
 	public void setColor(int r, int g, int b){
+
     	self_color = new Color(r, g, b);
 	}
 
 	public void draw(Graphics g) {
 		if (enabled) {
-			g.setFont(self_font.getFont(self_size));
 			g.setColor(self_color);
+			g.setFont(self_font.getFont(self_size));
 			g.drawString(self_content, origin_x, origin_y);
 		}
 	}

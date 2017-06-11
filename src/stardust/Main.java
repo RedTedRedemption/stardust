@@ -2,7 +2,8 @@ package stardust; /**
  * Created by teddy on 3/3/17.
  */
 
-import slythr.SplashThread;
+import slythr.*;
+import slythr.SplashScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class Main {
     static boolean evar_drawfps = false;
     public static boolean evar_drawboundingboxes;
     public static Thread splashthread;
+    public static SplashThread splash_direct_access;
 
 
     public static void main(String[] args) throws FileNotFoundException, InterruptedException {
@@ -57,11 +59,13 @@ public class Main {
             }
 
             System.out.print("gathering system data...");
+            slythr.SplashScreen.status.setText("gathering system data");
             GlobalGamestate.getOS();
             System.out.println("done");
             System.out.print("This program's cwd is ");
             System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
             System.out.print("Initializing Driver...");
+            SplashScreen.status.setText("initializing driver");
 
 
 
@@ -69,8 +73,10 @@ public class Main {
 
 
             if (!evar_nosplash) {
-                splashthread = new Thread(new SplashThread(), "Splash thread");
+                splash_direct_access = new SplashThread();
+                splashthread = new Thread(splash_direct_access, "Splash thread");
                 splashthread.start();
+                Thread.sleep(2000);
 
             } else {
                 System.out.print("skipping splash...");
@@ -85,6 +91,7 @@ public class Main {
 
             System.out.println("done");
             System.out.println("spawning pane");
+            SplashScreen.status.setText("spawning pane");
             frame.pack();
             frame.setSize(900, 900);
             frame.setLocation(100, 50);

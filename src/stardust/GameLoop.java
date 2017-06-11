@@ -3,9 +3,7 @@ package stardust;
 import Particles.AsteroidExplodeParticle;
 import levels.GameoverLevel;
 import levels.Level;
-import slythr.Physics;
-import slythr.Primitive;
-import slythr.Text;
+import slythr.*;
 import sprites.AsteroidSprite;
 import sprites.BulletSprite;
 import sprites.EnemySprite;
@@ -41,10 +39,6 @@ public class GameLoop implements Runnable{
     public GameLoop() throws IOException {
         gameThread = new Thread(this, "Stardust game loop thread");
 
-        System.out.println(slot_1_content);
-        System.out.println(slot_2_content);
-        System.out.println(slot_3_content);
-
     }
 
     public void run() {
@@ -57,7 +51,7 @@ public class GameLoop implements Runnable{
                     MainPane.evar_mousepos[1] = (int) (MouseInfo.getPointerInfo().getLocation().getY() - host_frame.getLocationOnScreen().getY()) - 30;
                 }
             } catch (java.awt.IllegalComponentStateException e) {
-
+                //pass;
             }
 
 
@@ -105,6 +99,45 @@ public class GameLoop implements Runnable{
                         MainPane.continue_text = new Text("Continue Game", 24, g, globalGamestate);
                         MainPane.exit_text = new Text("Exit Game", 24, g, globalGamestate);
                         MainPane.load_text = new Text("Load Game", 24, g, globalGamestate);
+                        MainPane.options_text = new Text("Options", 24, g, globalGamestate);
+                        MainPane.options_title = new Text("Options", 48, g, globalGamestate);
+                        MainPane.master_volume_text = new Text("Master Volume:", 24, g, globalGamestate);
+                        MainPane.delete_saves_text = new Text("Clear a save file", 24, g, globalGamestate);
+                        MainPane.confirm_text = new Text("Confirm", 24, g, globalGamestate);
+
+                        confirm_text.disable();
+
+
+                        options_title.setpos(main_menu_title.getpos()[0], main_menu_title.getpos()[1]);
+                        
+                        delete_saves_text.disable();
+
+                        MainPane.master_volume_slider = new Rect(globalGamestate);
+                        options_title.disable();
+                        master_volume_text.disable();
+                        master_volume_slider_border = new Rect(globalGamestate);
+                        master_volume_slider_border.disable();
+                        master_volume_slider.disable();
+                        master_volume_slider.setColor(255, 255, 255);
+                        master_volume_slider.setpos(60, 210);
+                        master_volume_slider_border.setpos(master_volume_slider.getpos()[0], master_volume_slider.getpos()[1]);
+                        master_volume_slider.setHeight(20);
+                        master_volume_slider.setWidth((int) GlobalGamestate.evar_master_volume * 200);
+
+                        master_volume_slider_border.setWidth(master_volume_slider.getWidth());
+                        master_volume_slider_border.setHeight(master_volume_slider.getHeight());
+
+
+                        MainPane.fadein.setTarget(confirm_text);
+
+
+
+                        go_back_text.setLabel("previous menu button");
+                        rendStack.add(go_back_text);
+                        go_back_text.setpos(0, 875);
+
+
+//
 
 
                         if (slot_1_content.equals("")) {
@@ -127,11 +160,16 @@ public class GameLoop implements Runnable{
 
 
 
-                            MainPane.main_menu_title.setpos(60, 150);
+                        MainPane.main_menu_title.setpos(60, 150);
                         continue_text.setpos(60, 200);
                         new_game_text.setpos(60, 250);
                         load_text.setpos(60, 300);
-                        exit_text.setpos(60, 350);
+                        exit_text.setpos(60, 400);
+                        options_text.setpos(60, 350);
+                        delete_saves_text.setpos(60, 280);
+                        delete_saves_text.update(global_g);
+                        confirm_text.setpos(delete_saves_text.getpos()[0] + delete_saves_text.getBounding_box().getWidth() + 50, delete_saves_text.getpos()[1]);
+
                         slot_1_text.enable();
                         slot_1_text.setLabel("save slot 1 text object");
                         slot_2_text.setLabel("save slot 2 text object");
@@ -149,6 +187,8 @@ public class GameLoop implements Runnable{
                         slot_1_text.setpos(host_frame.getWidth() / 2 - slot_1_text.getBounding_box().getWidth() / 2, host_frame.getHeight() / 2 - 100);
                         slot_3_text.setpos(host_frame.getWidth() / 2 - slot_3_text.getBounding_box().getWidth() / 2, host_frame.getHeight() / 2 + 100);
 
+                        
+                        //add stuff to rendStack
                         rendStack.add(MainPane.main_menu_title);
                         rendStack.add(new_game_text);
                         rendStack.add(exit_text);
@@ -157,6 +197,23 @@ public class GameLoop implements Runnable{
                         rendStack.add(slot_2_text);
                         rendStack.add(slot_3_text);
                         rendStack.add(slot_1_text);
+                        rendStack.add(options_text);
+                        rendStack.add(master_volume_slider);
+                        rendStack.add(master_volume_text);
+                        rendStack.add(options_title);
+                        rendStack.add(delete_saves_text);
+                        rendStack.add(confirm_text);
+
+
+                        fadein.setTarget(slot_1_text);
+                        fadein2.setTarget(slot_2_text);
+                        fadein3.setTarget(slot_3_text);
+
+                        general_animation_buffer.add(fadein);
+                        general_animation_buffer.add(fadein2);
+                        general_animation_buffer.add(fadein3);
+
+
 
 
                         cvar_gamestate = 0;
@@ -182,6 +239,8 @@ public class GameLoop implements Runnable{
 //                            new_game_text.bounding_box.setpos(new_game_text.getpos()[0], new_game_text.getpos()[1] - 20);
 //                            new_game_text.bounding_box.setWidth(100);
                         if (statevar_menu.equals("main")) {
+
+
 
                             if (Physics.pointInObj(evar_mousepos[0], evar_mousepos[1], new_game_text.getBounding_box())) {
                                 if (new_game_text.getSize() < 30) {
@@ -215,7 +274,7 @@ public class GameLoop implements Runnable{
 
                             if (Physics.pointInObj(evar_mousepos[0], evar_mousepos[1], load_text.getBounding_box())) {
                                 if (load_text.getSize() < 30) {
-                                    load_text.setSize(continue_text.getSize() + 1);
+                                    load_text.setSize(load_text.getSize() + 1);
                                 }
                             } else {
                                 if (load_text.getSize() > 24) {
@@ -223,13 +282,24 @@ public class GameLoop implements Runnable{
                                 }
                             }
 
+                            if (Physics.pointInObj(evar_mousepos[0], evar_mousepos[1], options_text.getBounding_box())) {
+                                if (options_text.getSize() < 30) {
+                                    options_text.setSize(options_text.getSize() + 1);
+                                }
+                            } else {
+                                if (options_text.getSize() > 24) {
+                                    options_text.setSize(options_text.getSize() - 1);
+                                }
+                            }
+                            
+                            
+
                             if (evar_mouseLeft && Physics.doObjectsCollide(cursor, new_game_text.getBounding_box())) {
 
                                 evar_mouseLeft = false;
-                                go_back_text.setLabel("previous menu button");
                                 go_back_text.enable();
-                                rendStack.add(go_back_text);
-                                go_back_text.setpos(0, 875);
+
+
 //
 
                                 statevar_menu = "newgame";
@@ -241,18 +311,21 @@ public class GameLoop implements Runnable{
                                 new_game_text.disable();
                                 load_text.disable();
                                 exit_text.disable();
+                                options_text.disable();
+
+                                fadein.start();
+                                fadein2.start();
+                                fadein3.start();
+                                fadein.generic_animate(go_back_text);
                             }
 
                             if (evar_mouseLeft && Physics.doObjectsCollide(cursor, load_text.getBounding_box())) {
 
                                 evar_mouseLeft = false;
-                                go_back_text.setLabel("previous menu button");
                                 go_back_text.enable();
-                                rendStack.add(go_back_text);
-                                go_back_text.setpos(0, 875);
 //
 
-                                statevar_menu = "newgame";
+                                statevar_menu = "load";
                                 slot_1_text.enable();
                                 slot_2_text.enable();
                                 slot_3_text.enable();
@@ -261,6 +334,12 @@ public class GameLoop implements Runnable{
                                 new_game_text.disable();
                                 load_text.disable();
                                 exit_text.disable();
+                                options_text.disable();
+
+                                fadein.start();
+                                fadein2.start();
+                                fadein3.start();
+                                fadein.generic_animate(go_back_text);
                             }
 
                             if (MainPane.evar_mouseLeft && Physics.doObjectsCollide(MainPane.cursor, exit_text.getBounding_box())) {
@@ -280,6 +359,33 @@ public class GameLoop implements Runnable{
                                 } catch (LineUnavailableException e) {
                                     e.printStackTrace();
                                 }
+                            }
+                            //ENTER OPTIONS MENU
+                            if (MainPane.evar_mouseLeft && Physics.doObjectsCollide(MainPane.cursor, options_text.getBounding_box()) || statevar_menu.equals("reenter options")) {
+                                evar_mouseLeft = false;
+                                go_back_text.enable();
+                                statevar_menu = "options";
+                                main_menu_title.disable();
+                                continue_text.disable();
+                                options_text.disable();
+                                load_text.disable();
+                                exit_text.disable();
+                                new_game_text.disable();
+                                master_volume_slider.enable();
+                                options_title.enable();
+                                options_title.setpos(main_menu_title.getpos()[0], main_menu_title.getpos()[1]);
+                                master_volume_text.enable();
+                                master_volume_text.setpos(continue_text.getpos()[0], continue_text.getpos()[1]);
+                                delete_saves_text.enable();
+
+                                fadein.generic_animate(options_title);
+
+
+
+
+
+
+
                             }
                         }
 
@@ -412,8 +518,8 @@ public class GameLoop implements Runnable{
                             if (evar_mouseLeft && Physics.doObjectsCollide(cursor, go_back_text.getBounding_box())) {
                                 cvar_gamestate = -2;
                                 evar_mouseLeft = false;
-                                rendStack.flush();
-                                go_back_text.setSize(24);
+                                go_back_text.enable();
+                                rendStack.add(go_back_text);
                                 statevar_menu = "main";
                                 slot_1_text.disable();
                                 slot_2_text.disable();
@@ -423,6 +529,8 @@ public class GameLoop implements Runnable{
                                 new_game_text.enable();
                                 load_text.enable();
                                 exit_text.enable();
+                                options_text.enable();
+                                rendStack.flush();
 
                             }
                         }
@@ -463,12 +571,49 @@ public class GameLoop implements Runnable{
                             }
 
                             if (evar_mouseLeft && Physics.doObjectsCollide(cursor, slot_1_text.getBounding_box())) {
+//                                cvar_gamestate = 1;
+//                                rendStack.flush();
+//                                System.out.println("loading game from save slot " + Integer.toString(cvar_saveslot));
+//                                System.out.print("setting up the level...");
+//                                try {
+//                                    makeIngame(standardStack.makeArrayList(), "slot_1.sav");
+//                                } catch (FileNotFoundException e) {
+//                                    e.printStackTrace();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                } catch (LineUnavailableException e) {
+//                                    e.printStackTrace();
+//                                }
                                 cvar_gamestate = 1;
                                 rendStack.flush();
-                                System.out.println("loading game from save slot " + Integer.toString(cvar_saveslot));
-                                System.out.print("setting up the level...");
                                 try {
                                     makeIngame(standardStack.makeArrayList(), "slot_1.sav");
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (LineUnavailableException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }if (evar_mouseLeft && Physics.doObjectsCollide(cursor, slot_2_text.getBounding_box())) {
+                                cvar_gamestate = 1;
+                                rendStack.flush();
+                                try {
+                                    makeIngame(standardStack.makeArrayList(), "slot_2.sav");
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (LineUnavailableException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }if (evar_mouseLeft && Physics.doObjectsCollide(cursor, slot_3_text.getBounding_box())) {
+                                cvar_gamestate = 1;
+                                rendStack.flush();
+                                try {
+                                    makeIngame(standardStack.makeArrayList(), "slot_3.sav");
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                 } catch (IOException e) {
@@ -480,6 +625,7 @@ public class GameLoop implements Runnable{
                             }
 
                             if (evar_mouseLeft && Physics.doObjectsCollide(cursor, go_back_text.getBounding_box())) {
+                                rendStack.flush();
                                 cvar_gamestate = -2;
                                 evar_mouseLeft = false;
                                 go_back_text.enable();
@@ -493,8 +639,77 @@ public class GameLoop implements Runnable{
                                 new_game_text.enable();
                                 load_text.enable();
                                 exit_text.enable();
-
+                                options_text.enable();
                             }
+
+
+                        }
+                        // OPTIONS MENU CONTROLLER
+                        if (statevar_menu.equals("options")){
+
+                            if (Physics.pointInObj(evar_mousepos[0], evar_mousepos[1], go_back_text.getBounding_box())) {
+                                if (go_back_text.getSize() < 30) {
+                                    go_back_text.setSize(go_back_text.getSize() + 1);
+                                }
+                            } else if(go_back_text.getSize() > 24) {
+                                go_back_text.setSize(go_back_text.getSize() - 1);
+                            }
+
+                            if (Physics.pointInObj(evar_mousepos[0], evar_mousepos[1], delete_saves_text.getBounding_box())) {
+                                if (delete_saves_text.getSize() < 30) {
+                                    delete_saves_text.setSize(delete_saves_text.getSize() + 1);
+                                }
+                            } else if (delete_saves_text.getSize() > 24) {
+                                delete_saves_text.setSize(delete_saves_text.getSize() - 1);
+                            }
+
+                            if (Physics.pointInObj(evar_mousepos[0], evar_mousepos[1], confirm_text.getBounding_box())) {
+                                if (confirm_text.getSize() < 30) {
+                                    confirm_text.setSize(confirm_text.getSize() + 1);
+                                }
+                            } else if (confirm_text.getSize() > 24) {
+                                confirm_text.setSize(confirm_text.getSize() - 1);
+                            }
+
+                            if (MainPane.evar_mouseLeft && Physics.pointInObj(evar_mousepos[0], evar_mousepos[1], master_volume_slider_border)){
+                                Audio.set_volume(((double) (evar_mousepos[0] - master_volume_slider.getpos()[0])) / 200.0);
+
+                                master_volume_slider.setWidth((int) (GlobalGamestate.evar_master_volume * 200.0));
+                            }
+
+                            if (MainPane.evar_mouseLeft && Physics.doObjectsCollide(cursor, delete_saves_text.getBounding_box())){
+//                                confirm_text.enable();
+                                options_title.disable();
+                                delete_saves_text.disable();
+                                slot_1_text.enable();
+                                slot_2_text.enable();
+                                slot_3_text.enable();
+                                master_volume_slider.disable();
+                                master_volume_text.disable();
+                                fadein.start();
+                                fadein2.start();
+                                fadein3.start();
+                            }
+
+
+                            if (MainPane.evar_mouseLeft && Physics.doObjectsCollide(cursor, go_back_text.getBounding_box())) {
+                                rendStack.flush();
+                                cvar_gamestate = -2;
+                                evar_mouseLeft = false;
+                                go_back_text.enable();
+                                rendStack.add(go_back_text);
+                                statevar_menu = "main";
+                                slot_1_text.disable();
+                                slot_2_text.disable();
+                                slot_3_text.disable();
+                                main_menu_title.enable();
+                                continue_text.enable();
+                                new_game_text.enable();
+                                load_text.enable();
+                                exit_text.enable();
+                                options_text.enable();
+                            }
+
 
 
                         }
@@ -513,6 +728,7 @@ public class GameLoop implements Runnable{
                             cvar_gamestate = -2;
                             statevar_paused = false;
                             MainPane.statevar_gameover = false;
+                            statevar_menu = "main";
                             rendStack.flush();
                             MainPane.unbind_unpause_bind_pause();
                             BulletSprite.flush();
@@ -677,7 +893,7 @@ public class GameLoop implements Runnable{
 
 
                             //focus system
-                            if (MainPane.evar_lshiftkey && MainPane.statevar_focusiscool) {
+                            if (MainPane.evar_qkey && MainPane.statevar_focusiscool) {
                                 globalGamestate.set_time(1.0 / MainPane.gamevar_focusfactor);
                                 statevar_focuscharge = statevar_focuscharge - MainPane.gamevar_focusdrain;
                             } else {
@@ -737,8 +953,6 @@ public class GameLoop implements Runnable{
                                 e.printStackTrace();
                             }
                         }
-
-
                     }
 
 
@@ -766,6 +980,7 @@ public class GameLoop implements Runnable{
                     if (cvar_gamestate == 4){
                         if (evar_spacekey){
                             try {
+                                update_all_text(MainPane.cutsceneBuffer);
                                 currentLevel.step(global_g, main_complex_stack);
                                 evar_spacekey = false;
                             } catch (IOException e) {
@@ -795,6 +1010,7 @@ public class GameLoop implements Runnable{
 //                    framevar_runme = false;
 //                    newframe = false;
 //                }
+                general_animation_buffer.step();
             } else {
 
             }

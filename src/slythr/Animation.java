@@ -1,5 +1,7 @@
 package slythr;
 
+import com.sun.istack.internal.Nullable;
+
 import java.util.ArrayList;
 
 /**
@@ -21,19 +23,47 @@ public class Animation {
     /**
      * A primitive that the animation will act on
      */
+
+    public static final String KEYFRAME = "keyframe";
+    public static final String OFFSET = "offset";
+    public static final String ENABLED = "enabled";
+    public static final String ACTION = "action";
+    public static final String BLACKTOWHITE = "black_to_white";
+    public static final String OPACITY = "opacity";
+    public static final String COLOR = "color";
+
+    public static Animation_Buffer default_buffer;
     public Primitive target;
     public int step = 0;
     public String mode;
     public boolean enabled = false;
     public SlythrAction action;
     public boolean loop = false;
+    public boolean generic = false;
 
-    public Animation(Primitive Target, String Mode, ArrayList<int[]> point_array){
+
+    /**
+     * Create a new animation. Target can be null.
+     * @param Target the target of the animation; is nullable
+     * @param Mode What the animation should do to the object.
+     * @param point_array
+     */
+
+    public Animation(@Nullable Primitive Target, String Mode, ArrayList<int[]> point_array){
         for (int[] a : point_array){
             bread.add(a);
         }
         target = Target;
         mode = Mode;
+    }
+
+    public Animation(@Nullable Primitive Target, String Mode){
+        target = Target;
+        mode = Mode;
+    }
+
+    public static void bind_default_animation_buffer(Animation_Buffer buffer){
+        default_buffer = buffer;
     }
 
     /**
@@ -86,6 +116,12 @@ public class Animation {
                         action.execute2();
                     }
                 }
+                if (mode.equals("opacity")) {
+                    target.setOpacity(bread.get(step)[0]);
+                }
+                if (mode.equals("color")) {
+                    target.setColor(bread.get(step)[0], bread.get(step)[1], bread.get(step)[2]);
+                }
 
 
 
@@ -132,6 +168,30 @@ public class Animation {
     }
     public void resume(){
         enabled = true;
+    }
+
+    public void generic_animate(Primitive target) {
+        if (default_buffer == null) {
+            try {
+                throw new SlythrError("Generic Animation buffer has not been initialized yet");
+            } catch (SlythrError slythrError) {
+                slythrError.printStackTrace();
+            }
+        } else {
+            Animation temp = new Animation(this.target, this.mode, this.bread);
+            default_buffer.add(temp);
+            temp.setTarget(target);
+            temp.generic = true;
+            temp.start();
+        }
+    }
+
+    public Animation duplicate_onto(){
+        Animation tout = new Animation(null, this.mode);
+        for (int[] point : this.bread){
+            tout.add(point);
+        }
+        return tout;
     }
 }
 

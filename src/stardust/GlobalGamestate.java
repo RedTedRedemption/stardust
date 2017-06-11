@@ -12,6 +12,8 @@ public class GlobalGamestate {
 
     public static int gamevar_playerHealth = 3;
 
+    public static double evar_master_volume = 1.0;
+
     public static int statevar_playerHealth;
 
     public static int gamevar_bulletspeed = 25;

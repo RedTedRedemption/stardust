@@ -27,6 +27,7 @@ public class SaveGame {
 
         PrintStream fout = new PrintStream(new FileOutputStream(GlobalGamestate.localizePath(get_savedat_path(target_file))));
         fout.print(save_String);
+        fout.close();
 
 
 
@@ -39,7 +40,7 @@ public class SaveGame {
         try {
             System.out.print("loading file...");
             String savedata = new String(Files.readAllBytes(FileSystems.getDefault().getPath(get_savedat_path(source_file))), StandardCharsets.UTF_8);
-            System.out.println(savedata);
+            System.out.println("savedata is: " + savedata);
             String[] splitted_savedata = savedata.split(";");
 
             MainPane.set_level(splitted_savedata[0]);

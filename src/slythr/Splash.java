@@ -16,6 +16,7 @@ public class Splash extends JWindow {
         duration = d;
     }
 
+
     // A simple little method to show a title screen in the center
     // of the screen for the amount of time given in the constructor
     public void showSplash() {
@@ -31,12 +32,10 @@ public class Splash extends JWindow {
         setBounds(x,y,width,height);
 
         // Build the splash screen
-        JLabel label = new JLabel(new ImageIcon("oreilly.gif"));
-        JLabel copyrt = new JLabel
-                ("Copyright 2002, O'Reilly & Associates", JLabel.CENTER);
-        copyrt.setFont(new Font("Sans-Serif", Font.BOLD, 12));
-        content.add(label, BorderLayout.CENTER);
-        content.add(copyrt, BorderLayout.SOUTH);
+        JLabel status = new JLabel
+                ("", JLabel.CENTER);
+        status.setFont(new Font("Sans-Serif", Font.BOLD, 12));
+        content.add(status, BorderLayout.SOUTH);
         Color oraRed = new Color(156, 20, 20,  255);
         content.setBorder(BorderFactory.createLineBorder(oraRed, 10));
 

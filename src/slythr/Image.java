@@ -34,6 +34,7 @@ public class Image extends Primitive {
 
 
     public Image(GlobalGamestate gamestate, String path) throws IOException {
+        SplashScreen.status.setText("loading image " + path);
         globalGamestate = gamestate;
         self_image = ImageIO.read(new File(GlobalGamestate.localizePath(path)));
 

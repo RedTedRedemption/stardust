@@ -1,6 +1,7 @@
 package slythr;
 
 import stardust.GlobalGamestate;
+import stardust.MainPane;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -26,9 +27,7 @@ public class Text_Box extends Complex{
     Frame host_frame;
 
 
-    int width1;
-    int width2;
-    int width3;
+
 
     FontRenderContext context;
 
@@ -48,12 +47,12 @@ public class Text_Box extends Complex{
         text_line3 = new Text(line_3, 24, g, globalGamestate);
         continue_guage = new Rect(globalGamestate);
         if(g != null) {
-            width1 = text_line1.getWidth();
-            width2 = text_line2.getWidth();
-            width3 = text_line3.getWidth();
-            text_line1.setpos((host_frame.getWidth() / 2) - (width1 / 2), (host_frame.getHeight() / 2) + 180);
-            text_line2.setpos((host_frame.getWidth() / 2) - (width2 / 2), (host_frame.getHeight() / 2) + 200);
-            text_line3.setpos((host_frame.getWidth() / 2) - (width3 / 2), (host_frame.getHeight() / 2) + 220);
+            text_line1.update(MainPane.global_g);
+            text_line2.update(MainPane.global_g);
+            text_line3.update(MainPane.global_g);
+            text_line1.setpos((host_frame.getWidth() / 2) - (text_line1.getBounding_box().getWidth() / 2), (host_frame.getHeight() / 2) + 180);
+            text_line2.setpos((host_frame.getWidth() / 2) - (text_line2.getBounding_box().getWidth() / 2), (host_frame.getHeight() / 2) + 200);
+            text_line3.setpos((host_frame.getWidth() / 2) - (text_line3.getBounding_box().getWidth() / 2), (host_frame.getHeight() / 2) + 220);
             text_line1.setColor(0,0,0);
             text_line2.setColor(0,0,0);
             text_line3.setColor(0, 0, 0);

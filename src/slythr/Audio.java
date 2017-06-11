@@ -4,58 +4,104 @@ package slythr;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import stardust.GlobalGamestate;
-import sun.audio.AudioStream;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
- * Created by teddy on 5/18/17.
+ * The Audio class is responsible for playing audio files. It contains internal code to maintain its own instances. Each
+ * Audio instance runs in its own thread.
  */
 public class Audio implements Runnable {
 
     static ArrayList<Thread> threads = new ArrayList<>();
+    static ArrayList<Audio> audios = new ArrayList<>();
 
 
 
-    InputStream in;
-    AudioStream audioStream;
     public boolean playing = false;
     Thread audiothread;
     String self_path;
     MediaPlayer mediaPlayer;
 
-    Media snd;
-
-
+    /**
+     *
+     * @param path The path to the source file for the audio instance.
+     * @throws IOException
+     * @throws LineUnavailableException
+     */
     public Audio(String path) throws IOException, LineUnavailableException {
+        SplashScreen.status.setText("loading audio file " + path);
         String bip = path;
         self_path = path;
         Media hit = new Media(new File(bip).toURI().toString());
         mediaPlayer = new MediaPlayer(hit);
+        audios.add(this);
     }
     public void run(){
         playing = true;
         mediaPlayer.play();
     }
 
+    /**
+     * Play the audio instance.
+     */
     public void play(){
-     //   try {
-            audiothread = new Thread(this, "slythr audio thread playing " + GlobalGamestate.localizePath(self_path));
-            threads.add(audiothread);
-            audiothread.start();
-      //  } catch (IOException e){
-      //      System.out.println("Error starting audio file " + GlobalGamestate.localizePath(self_path));
-      //  }
+        audiothread = new Thread(this, "slythr audio thread playing " + GlobalGamestate.localizePath(self_path));
+        threads.add(audiothread);
+        audiothread.start();
+        playing = true;
+        this.mediaPlayer.setVolume(GlobalGamestate.evar_master_volume);
     }
 
+    /**
+     * Resume an audio instance.
+     */
+    public void resume(){
+        if (playing){
+            mediaPlayer.play();
+        }
+    }
+
+    /**
+     * Pause the audio instance.
+     */
     public void stop(){
        mediaPlayer.stop();
+       playing = false;
     }
 
+    /**
+     * Pause all audio instances.
+     */
+    public static void pauseAll(){
+        for (Audio a : audios){
+            a.mediaPlayer.pause();
+        }
+    }
 
+    /**
+     * Resume all audio instances.
+     */
+    public static void resumeAll(){
+        for (Audio a : audios){
+            if (a.playing) {
+                a.resume();
+            }
+        }
+    }
+
+    /**
+     * Set the volume of all audio instances.
+     * @param vol {@code double} value between 0 and 1 to set all instances' volume to.
+     */
+    public static void set_volume(double vol){
+        GlobalGamestate.evar_master_volume = vol;
+        for (Audio a : audios){
+            a.mediaPlayer.setVolume(GlobalGamestate.evar_master_volume);
+        }
+    }
 
 }

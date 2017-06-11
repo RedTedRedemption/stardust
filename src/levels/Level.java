@@ -2,6 +2,7 @@ package levels;
 
 import slythr.Complex_Stack;
 import slythr.TextboxThread;
+import slythr.Title;
 import sprites.AsteroidSprite;
 import sprites.EnemySprite;
 import stardust.GameLoop;
@@ -32,11 +33,12 @@ public class Level {
     GlobalGamestate globalGamestate;
     String addme;
     boolean runagain = true;
+    Thread titlethread;
 
 
     public Level(String sourcefile, Frame frame, GlobalGamestate globalgamestate){
         host_frame = frame;
-        System.out.print("Adding new level from file '" + sourcefile + "'...");
+        //System.out.print("Adding new level from file '" + sourcefile + "'...");
         source_file = sourcefile;
         globalGamestate = globalgamestate;
         System.out.println("done");
@@ -174,6 +176,15 @@ public class Level {
                 System.out.print("saving the game to file " + slotfilename + "...");
                 SaveGame.save(GlobalGamestate.localizePath((FileSystems.getDefault().getPath(slotfilename).toString())), source_file, step);
                 System.out.println("done");
+            }
+            if (spawnline.contains("title")) {
+                String[] splitted_spawnline = spawnline.split("-");
+                Title title = new Title("empty", 3000);
+                title.show(splitted_spawnline[1], Integer.parseInt(splitted_spawnline[2]), MainPane.global_g);
+            }
+            if (spawnline.contains("print")) {
+                String[] splitted_spawnline = spawnline.split("-");
+                System.out.println(splitted_spawnline[1]);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(MainPane.host_frame, "The level reader has encountered an error while reading "
