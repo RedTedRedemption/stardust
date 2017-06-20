@@ -1,9 +1,9 @@
 package stardust;
 
-import Particles.AsteroidExplodeParticle;
 import javafx.embed.swing.JFXPanel;
 import levels.Level;
 import levels.mainMenu;
+import particles.AsteroidExplodeParticle;
 import slythr.*;
 import slythr.Image;
 import slythr.SplashScreen;
@@ -16,7 +16,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferStrategy;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class MainPane extends JPanel{
 
     public static JFXPanel audiopanel = new JFXPanel();
 
-    public BufferStrategy buffer_strat;
+    //public BufferStrategy buffer_strat;
     public static Stack rendStack = new Stack();
     static Stack standardStack = new Stack();
     public static Stack pauseBuffer = new Stack();
@@ -69,7 +68,7 @@ public class MainPane extends JPanel{
 
 
 //dough
-static ArrayList<int[]> invuln_dough = new ArrayList<>();
+    static ArrayList<int[]> invuln_dough = new ArrayList<>();
     static ArrayList<int[]> blink_dough = new ArrayList<>();
 
 
@@ -82,7 +81,7 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
 
     public static Primitive ship;
     public Primitive pause_text;
-    public static Primitive focusguage = new Rect(globalGamestate);
+    public static Primitive focusguage = new Rect();
     public static Primitive back_to_menu_text;
     public static Primitive resume_text;
     static Primitive health_text;
@@ -189,6 +188,7 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
     static Primitive master_volume_slider_border;
     static Primitive delete_saves_text;
     static Primitive confirm_text;
+    static Primitive game_over_text;
 
     Primitive qexit_text;
 
@@ -253,9 +253,9 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
         requestFocus();
     }
 
-    public MainPane(JFrame frame, GlobalGamestate gamestate, BufferStrategy bufferStrategy) throws IOException, InterruptedException, LineUnavailableException {
+    public MainPane(JFrame frame, GlobalGamestate gamestate) throws IOException, InterruptedException, LineUnavailableException {
         super();
-        buffer_strat = bufferStrategy;
+        //buffer_strat = bufferStrategy;
 
 
         host_frame = frame;
@@ -272,7 +272,7 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
 
 
 
-        cursor = new Rect(globalGamestate);
+        cursor = new Rect();
         cursor.setAttributes(0,0,1,1,0,0,0);
 
         menulvl = new mainMenu(gamestate, g);
@@ -322,19 +322,19 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
         SplashScreen.status.setText("creating some resources");
         Animation.bind_default_animation_buffer(general_animation_buffer);
         globalFrame = frame;
-        ship = new Rect(gamestate);
-        health_text = new Text(Integer.toString(GlobalGamestate.statevar_playerHealth), 24, global_g, globalGamestate);
+        ship = new Rect();
+        health_text = new Text(Integer.toString(GlobalGamestate.statevar_playerHealth), 24, global_g);
 
 
         ship.setAttributes(frame.getWidth() / 2, frame.getHeight() / 2, 20, 20, 0, 0, 255);
 
 
-        cutscene_background = new Image(globalGamestate, GlobalGamestate.localizePath("src/images/cutscene_back_1.png"));
+        cutscene_background = new Image(GlobalGamestate.localizePath("src/images/cutscene_back_1.png"));
         cutsceneBuffer.add(cutscene_background);
 
 
         globalGamestate.physics_enable(ship);
-        healthbar = new Rect(globalGamestate);
+        healthbar = new Rect();
         healthbar.setWidth(GlobalGamestate.statevar_playerHealth);
         healthbar.setHeight(15);
         healthbar.setColor(0, 0,255);
@@ -343,7 +343,7 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
         //INITIALIZE AUDIO
         test_sound = new Audio("src/sounds/Troll Song.mp3");
         moonlight_sonata = new Audio("src/sounds/moonlight_sonata.mp3");
-        white_dove = new Audio ("src/sounds/white_dove.mp4");
+        white_dove = new Audio ("src/sounds/Troll Song.mp3");
 
         System.out.print("generating animations...");
         SplashScreen.status.setText("generating animations");
@@ -380,26 +380,28 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
 
 
         focusguage.setAttributes(0, frame.getHeight() - 30, 15, 56, 0, 255, 0);
-        score = new Text(Integer.toString(GlobalGamestate.statevar_score), 24, global_g, globalGamestate);
+        score = new Text(Integer.toString(GlobalGamestate.statevar_score), 24, global_g);
         System.out.println("done");
         score.setpos(0, 15);
 
-        title_text = new Text("empty", 36, global_g, globalGamestate);
+        title_text = new Text("empty", 36, global_g);
         title_text.disable();
 
 
-        healthblit1 = new Rect(globalGamestate);
+        healthblit1 = new Rect();
         healthblit1.setAttributes(0,0,15, 20, 0, 255, 0);
-        healthblit2 = new Rect(globalGamestate);
+        healthblit2 = new Rect();
         healthblit2.setAttributes(0,0,15,20,0,255,0);
-        healthblit3 = new Rect(globalGamestate);
+        healthblit3 = new Rect();
         healthblit3.setAttributes(0,0,15,20,0,255,0);
         health_text.setText("Health: ");
         health_text.getBounding_box();
 
-        go_back_text = new Text("Back", 24, g, globalGamestate);
+        go_back_text = new Text("Back", 24, g);
         go_back_text.setLabel("previous menu");
         go_back_text.setpos(0, 900);
+
+        game_over_text = new Text("Game Over", 48, g);
 
 
 
@@ -422,6 +424,7 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
         standardStack.add(healthblit2);
         standardStack.add(healthblit3);
         standardStack.add(title_text);
+        standardStack.add(game_over_text);
 
         globalGamestate = gamestate;
         System.out.println("done");
@@ -584,10 +587,10 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
                     System.out.println("Pausing game");
                     Audio.pauseAll();
                     evar_detectmousepos = true;
-                    pause_text = new Text("Game Paused", 40, global_g, globalGamestate);
-                    back_to_menu_text = new Text("Back to Menu", 24, global_g, globalGamestate);
-                    quit_text = new Text("Quit Game", 24, global_g, globalGamestate);
-                    resume_text = new Text("Resume Game", 24, global_g, globalGamestate);
+                    pause_text = new Text("Game Paused", 40, global_g);
+                    back_to_menu_text = new Text("Back to Menu", 24, global_g);
+                    quit_text = new Text("Quit Game", 24, global_g);
+                    resume_text = new Text("Resume Game", 24, global_g);
                     pause_text.setpos(100, 100);
                     quit_text.setpos(100, 300);
                     back_to_menu_text.setpos(100, 250);
@@ -716,6 +719,12 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
         Testsprite.bind_graphics(global_g);
         Testsprite.bind_host_frame(frame);
         System.out.println("done");
+
+        System.out.print("loading preferences...");
+        SplashScreen.status.setText("loading preferences");
+        Settings.load();
+        System.out.println("done");
+
         System.out.println("initial setup done. Entering Main Menu");
         SplashScreen.status.setText("initial setup done; entering main menu");
 
@@ -780,6 +789,8 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
         g.fillRect(0, 0, 900, 900);
        // g.setColor(new Color(0, 0, 0));
        // g.fillRect(0, 0, globalFrame.getHeight(), globalFrame.getWidth());
+
+
 
         if (g == null) {
             //pass
@@ -882,12 +893,12 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
         invuln.bind_Action(new SlythrAction() {
             @Override
             public void execute() {
-                globalGamestate.statevar_god = true;
+                GlobalGamestate.statevar_god = true;
             }
 
             @Override
             public void execute2() {
-                globalGamestate.statevar_god = false;
+                GlobalGamestate.statevar_god = false;
             }
         });
         blink_animation = new Animation(ship, Animation.ENABLED,  blink_dough);
@@ -950,12 +961,12 @@ static ArrayList<int[]> invuln_dough = new ArrayList<>();
         invuln.bind_Action(new SlythrAction() {
             @Override
             public void execute() {
-                globalGamestate.statevar_god = true;
+                GlobalGamestate.statevar_god = true;
             }
 
             @Override
             public void execute2() {
-                globalGamestate.statevar_god = false;
+                GlobalGamestate.statevar_god = false;
             }
         });
         blink_animation = new Animation(ship, Animation.ENABLED,  blink_dough);

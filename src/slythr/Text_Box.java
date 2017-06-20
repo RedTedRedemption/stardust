@@ -40,12 +40,12 @@ public class Text_Box extends Complex{
         globalGamestate = gamestate;
         g = G;
 
-        outer_rect = new Rect(globalGamestate);
-        inner_rect = new Rect(globalGamestate);
-        text_line1 = new Text(line_1, 24, g, globalGamestate);
-        text_line2 = new Text(line_2, 24, g, globalGamestate);
-        text_line3 = new Text(line_3, 24, g, globalGamestate);
-        continue_guage = new Rect(globalGamestate);
+        outer_rect = new Rect();
+        inner_rect = new Rect();
+        text_line1 = new Text(line_1, 24, g);
+        text_line2 = new Text(line_2, 24, g);
+        text_line3 = new Text(line_3, 24, g);
+        continue_guage = new Rect();
         if(g != null) {
             text_line1.update(MainPane.global_g);
             text_line2.update(MainPane.global_g);

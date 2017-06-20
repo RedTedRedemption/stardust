@@ -2,6 +2,11 @@ package slythr;
 
 import java.awt.*;
 
+/**
+ * A super class for primitives. Does not do anything on its own, but allows multiple types of primitives to be manipulated
+ * as though they were the same type.
+ */
+
 public class Primitive {
 
 	public int[] physics_velocity;

@@ -4,6 +4,9 @@ import stardust.GlobalGamestate;
 
 import java.time.Instant;
 
+/**
+ * Class for simulation of various physics related functions such as gravity (not implemented yet) and object collision
+ */
 
 public class Physics {
 
@@ -35,6 +38,15 @@ public class Physics {
 	// return false;
 	// }
 
+	/**
+	 * Casts a ray
+	 * @deprecated
+	 * @param startx
+	 * @param starty
+	 * @param endx
+	 * @param target
+	 * @return
+	 */
 	public boolean castRay(int startx, int starty, int endx, Primitive target) {
 		System.out.println("casting ray");
 		int targtop = getPointsRect(target)[1];

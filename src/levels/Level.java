@@ -31,7 +31,6 @@ public class Level {
     public int step = 0;
     Frame host_frame;
     GlobalGamestate globalGamestate;
-    String addme;
     boolean runagain = true;
     Thread titlethread;
 
@@ -103,7 +102,7 @@ public class Level {
                 String[] splitted_spawnline = spawnline.split("-");
                 //System.out.println("making a textbox with content " + " " + splitted_spawnline[1] + " " + splitted_spawnline[2] + " " + splitted_spawnline[3]);
 
-                Thread waitThread = new Thread(new TextboxThread(globalGamestate.gamevar_dialoguedelay, MainPane.make_text_box(globalGamestate, g, splitted_spawnline[1], splitted_spawnline[2], splitted_spawnline[3], host_frame)));
+                Thread waitThread = new Thread(new TextboxThread(GlobalGamestate.gamevar_dialoguedelay, MainPane.make_text_box(globalGamestate, g, splitted_spawnline[1], splitted_spawnline[2], splitted_spawnline[3], host_frame)));
                 waitThread.start();
                 waitThread.join();
                 return true;
@@ -135,7 +134,7 @@ public class Level {
                 globalGamestate.god_on();
             }
             if (spawnline.contains("god_off")) {
-                globalGamestate.statevar_god = false;
+                GlobalGamestate.statevar_god = false;
             }
             if (spawnline.equals("wait")) {
                 //pass;

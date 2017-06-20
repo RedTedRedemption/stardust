@@ -8,6 +8,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A Primitive that renders as an image on the screen.
+ */
 
 public class Image extends Primitive {
 
@@ -29,26 +32,33 @@ public class Image extends Primitive {
     public String label = "an image object";
 
 
-
-
-
-
-    public Image(GlobalGamestate gamestate, String path) throws IOException {
+    /**
+     * Create a new image Primitive
+     * @param path file path to the image to load.
+     * @throws IOException
+     */
+    public Image(String path) throws IOException {
         SplashScreen.status.setText("loading image " + path);
-        globalGamestate = gamestate;
+
         self_image = ImageIO.read(new File(GlobalGamestate.localizePath(path)));
 
 
     }
 
-
+    /**
+     * Set the object's image.
+     * @param path path to the image
+     * @throws IOException
+     */
     public void setImage(String path) throws IOException {
         self_image = ImageIO.read(new File(GlobalGamestate.localizePath(path)));
     }
 
 
-
-
+    /**
+     * Draw the object.
+     * @param g Graphics instance to draw the object to
+     */
     public void draw(Graphics g) {
 
         // System.out.println("drawing from rect");

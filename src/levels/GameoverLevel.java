@@ -18,7 +18,7 @@ public class GameoverLevel {
 
     public GameoverLevel(Graphics g, GlobalGamestate gamestate){
         globalGamestate = gamestate;
-        Primitive gameover = new Text("Game Over!", 48, g, globalGamestate);
+        Primitive gameover = new Text("Game Over!", 48, g);
         gameover.update(MainPane.global_g);
         gameover.setpos(MainPane.host_frame.getWidth() - gameover.getBounding_box().getWidth(), MainPane.host_frame.getHeight() + gameover.getBounding_box().getHeight());
         selfstack.add(gameover);

@@ -19,10 +19,10 @@ public class mainMenu {
 
 
     public mainMenu(GlobalGamestate gamestate, Graphics g){
-        title = new Text("Main Menu", 36, g, gamestate);
-        start = new Text("New Game", 24, g, gamestate);
+        title = new Text("Main Menu", 36, g);
+        start = new Text("New Game", 24, g);
         globalGamestate = gamestate;
-        start_bounding_box = new Rect(globalGamestate);
+        start_bounding_box = new Rect();
         start_bounding_box.setHeight(20);
         start_bounding_box.setWidth(130);
 

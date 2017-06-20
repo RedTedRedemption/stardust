@@ -1,9 +1,8 @@
-package stardust; /**
- * Created by teddy on 3/3/17.
- */
+package stardust;
 
-import slythr.*;
+
 import slythr.SplashScreen;
+import slythr.SplashThread;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +10,9 @@ import java.awt.image.BufferStrategy;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 
+/**
+ * Stardust Main class. Runs initialization code, creates the window and starts the game.
+ */
 
 public class Main {
 
@@ -82,6 +84,9 @@ public class Main {
                 System.out.print("skipping splash...");
             }
             JFrame frame = new JFrame("Stardust");
+            frame.setIconImage(new ImageIcon("./images/cutscene_back_1.png").getImage());
+
+
             frame.setTitle("Stardust: Powered by Slythr");
 
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,10 +100,10 @@ public class Main {
             frame.pack();
             frame.setSize(900, 900);
             frame.setLocation(100, 50);
-            frame.createBufferStrategy(3);
+//            frame.createBufferStrategy(3);
 
-            buffer_strategy = frame.getBufferStrategy();
-            frame.setContentPane(new MainPane(frame, new GlobalGamestate(), buffer_strategy));
+            //buffer_strategy = frame.getBufferStrategy();
+            frame.setContentPane(new MainPane(frame, new GlobalGamestate()));
             frame.setVisible(true);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(new Frame(), e.toString());

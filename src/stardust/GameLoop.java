@@ -1,7 +1,6 @@
 package stardust;
 
-import Particles.AsteroidExplodeParticle;
-import levels.GameoverLevel;
+import particles.AsteroidExplodeParticle;
 import levels.Level;
 import slythr.*;
 import sprites.AsteroidSprite;
@@ -94,16 +93,21 @@ public class GameLoop implements Runnable{
                         MainPane.white_dove.play();
                         MainPane.go_back_text.disable();
                         //rendStack = menulvl.getMe();
-                        MainPane.main_menu_title = new Text("Main Menu", 48, g, globalGamestate);
-                        MainPane.new_game_text = new Text("New Game", 24, g, globalGamestate);
-                        MainPane.continue_text = new Text("Continue Game", 24, g, globalGamestate);
-                        MainPane.exit_text = new Text("Exit Game", 24, g, globalGamestate);
-                        MainPane.load_text = new Text("Load Game", 24, g, globalGamestate);
-                        MainPane.options_text = new Text("Options", 24, g, globalGamestate);
-                        MainPane.options_title = new Text("Options", 48, g, globalGamestate);
-                        MainPane.master_volume_text = new Text("Master Volume:", 24, g, globalGamestate);
-                        MainPane.delete_saves_text = new Text("Clear a save file", 24, g, globalGamestate);
-                        MainPane.confirm_text = new Text("Confirm", 24, g, globalGamestate);
+                        MainPane.main_menu_title = new Text("Main Menu", 48, g);
+                        MainPane.new_game_text = new Text("New Game", 24, g);
+                        MainPane.continue_text = new Text("Continue Game", 24, g);
+                        MainPane.exit_text = new Text("Exit Game", 24, g);
+                        MainPane.load_text = new Text("Load Game", 24, g);
+                        MainPane.options_text = new Text("Options", 24, g);
+                        MainPane.options_title = new Text("Options", 48, g);
+                        MainPane.master_volume_text = new Text("Master Volume:", 24, g);
+                        MainPane.delete_saves_text = new Text("Clear a save file", 24, g);
+                        MainPane.confirm_text = new Text("Confirm", 24, g);
+
+                        MainPane.game_over_text.update(global_g);
+                        game_over_text.centerx(host_frame.getWidth() / 2);
+                        game_over_text.centery(host_frame.getHeight() / 2);
+                        game_over_text.disable();
 
                         confirm_text.disable();
 
@@ -112,20 +116,23 @@ public class GameLoop implements Runnable{
                         
                         delete_saves_text.disable();
 
-                        MainPane.master_volume_slider = new Rect(globalGamestate);
+                        MainPane.master_volume_slider = new Rect();
                         options_title.disable();
                         master_volume_text.disable();
-                        master_volume_slider_border = new Rect(globalGamestate);
+                        master_volume_slider_border = new Rect();
                         master_volume_slider_border.disable();
                         master_volume_slider.disable();
                         master_volume_slider.setColor(255, 255, 255);
                         master_volume_slider.setpos(60, 210);
-                        master_volume_slider_border.setpos(master_volume_slider.getpos()[0], master_volume_slider.getpos()[1]);
+                        master_volume_slider_border.setpos(master_volume_slider.getpos()[0] - 10, master_volume_slider.getpos()[1]);
                         master_volume_slider.setHeight(20);
-                        master_volume_slider.setWidth((int) GlobalGamestate.evar_master_volume * 200);
+                        master_volume_slider.setWidth((int) (GlobalGamestate.evar_master_volume * 200));
 
-                        master_volume_slider_border.setWidth(master_volume_slider.getWidth());
+
+                        master_volume_slider_border.setWidth(210);
                         master_volume_slider_border.setHeight(master_volume_slider.getHeight());
+
+                        rendStack.add(master_volume_slider_border);
 
 
                         MainPane.fadein.setTarget(confirm_text);
@@ -141,21 +148,21 @@ public class GameLoop implements Runnable{
 
 
                         if (slot_1_content.equals("")) {
-                            MainPane.slot_1_text = new Text("Slot 1 <EMPTY>", 36, g, globalGamestate);
+                            MainPane.slot_1_text = new Text("Slot 1 <EMPTY>", 36, g);
                         } else {
-                            MainPane.slot_1_text = new Text("Slot 1", 36, g, globalGamestate);
+                            MainPane.slot_1_text = new Text("Slot 1", 36, g);
                         }
 
                         if (slot_2_content.equals("")) {
-                            MainPane.slot_2_text = new Text("Slot 2 <EMPTY>", 36, g, globalGamestate);
+                            MainPane.slot_2_text = new Text("Slot 2 <EMPTY>", 36, g);
                         } else {
-                            MainPane.slot_2_text = new Text("Slot 2", 36, g, globalGamestate);
+                            MainPane.slot_2_text = new Text("Slot 2", 36, g);
                         }
 
                         if (slot_3_content.equals("")) {
-                            MainPane.slot_3_text = new Text("Slot 3 <EMPTY>", 36, g, globalGamestate);
+                            MainPane.slot_3_text = new Text("Slot 3 <EMPTY>", 36, g);
                         } else {
-                            MainPane.slot_3_text = new Text("Slot 3", 36, g, globalGamestate);
+                            MainPane.slot_3_text = new Text("Slot 3", 36, g);
                         }
 
 
@@ -672,13 +679,18 @@ public class GameLoop implements Runnable{
                             }
 
                             if (MainPane.evar_mouseLeft && Physics.pointInObj(evar_mousepos[0], evar_mousepos[1], master_volume_slider_border)){
-                                Audio.set_volume(((double) (evar_mousepos[0] - master_volume_slider.getpos()[0])) / 200.0);
+                                try {
+                                    Audio.set_volume(((double) (evar_mousepos[0] - master_volume_slider.getpos()[0])) / 200.0);
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                }
 
                                 master_volume_slider.setWidth((int) (GlobalGamestate.evar_master_volume * 200.0));
                             }
 
                             if (MainPane.evar_mouseLeft && Physics.doObjectsCollide(cursor, delete_saves_text.getBounding_box())){
-//                                confirm_text.enable();
+
+                                //todo - make slot text objects react to mouse movement and delete saves when clicked
                                 options_title.disable();
                                 delete_saves_text.disable();
                                 slot_1_text.enable();
@@ -817,19 +829,18 @@ public class GameLoop implements Runnable{
                         //System.out.println(globalGamestate.statevar_playerHealth);
                         if (GlobalGamestate.statevar_playerHealth <= 0) {
                             System.out.println("player is dead");
-                            rendStack.remove(ship);
                             cvar_gamestate = -1;
                         }
 
 
                         //HEALTHBLITS
 
-                        if (globalGamestate.statevar_playerHealth < 3) {
+                        if (GlobalGamestate.statevar_playerHealth < 3) {
                             healthblit3.disable();
                         } else {
                             healthblit3.enable();
                         }
-                        if (globalGamestate.statevar_playerHealth < 2) {
+                        if (GlobalGamestate.statevar_playerHealth < 2) {
                             healthblit2.disable();
                         } else {
                             healthblit2.enable();
@@ -869,17 +880,15 @@ public class GameLoop implements Runnable{
 
 
                         if (cvar_gamestate == -1) {
-                            rendStack.flush();
+                            System.out.println("Game Over");
                             AsteroidSprite.flush();
                             LittleStar.flush();
                             BulletSprite.flush();
+                            general_animation_buffer.pause_all();
+                            rendStack.disable_all();
                             AsteroidExplodeParticle.flush();
-                            GameoverLevel gameover_level = new GameoverLevel(g, globalGamestate);
-                            rendStack.add(gameover_level.getMe());
-                            if (evar_spacekey) {
-                                cvar_gamestate = 0;
-                                statevar_gameover = false;
-                            }
+                            game_over_text.enable();
+
                         }
 
                         if (GlobalGamestate.statevar_weaponsArmed) {
@@ -968,7 +977,7 @@ public class GameLoop implements Runnable{
                     if (cvar_gamestate == -3) {
                         rendStack.flush();
                         statevar_paused = true;
-                        Primitive game_over = new Text("Game Over", 50, global_g, globalGamestate);
+                        Primitive game_over = new Text("Game Over", 50, global_g);
                         game_over.centerx(host_frame.getWidth() / 2, global_g);
                         game_over.setpos(game_over.getpos()[0], host_frame.getHeight() / 2);
                         rendStack.add(game_over);
@@ -1020,7 +1029,7 @@ public class GameLoop implements Runnable{
                 delay = 16;
             }
             try {
-                gameThread.sleep(delay);
+                Thread.sleep(delay);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

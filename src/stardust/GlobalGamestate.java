@@ -10,6 +10,8 @@ import java.util.ArrayList;
  */
 public class GlobalGamestate {
 
+    public static Runtime runtime = Runtime.getRuntime();
+
     public static int gamevar_playerHealth = 3;
 
     public static double evar_master_volume = 1.0;

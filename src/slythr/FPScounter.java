@@ -4,7 +4,7 @@ import stardust.GameLoop;
 import stardust.MainPane;
 
 /**
- * Created by teddy on 5/19/17.
+ * Thread used to count how many frames are rendered in a second.
  */
 public class FPScounter implements Runnable {
 
@@ -21,8 +21,8 @@ public class FPScounter implements Runnable {
             try {
                 System.out.print("creating fps counter thread...");
                 fpsthread = new Thread(this, "FPS counter thread");
-                fps = new Text("", 24, MainPane.global_g, MainPane.globalGamestate);
-                cps = new Text("", 24, MainPane.global_g, MainPane.globalGamestate);
+                fps = new Text("", 24, MainPane.global_g);
+                cps = new Text("", 24, MainPane.global_g);
                 fps.setpos(MainPane.host_frame.getWidth() - fps.getBounding_box().getWidth(), 24);
 
                 System.out.println("done");

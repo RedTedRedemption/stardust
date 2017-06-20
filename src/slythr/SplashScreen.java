@@ -62,7 +62,7 @@ public class SplashScreen extends JWindow {
     }
 
     public void status(String status){
-        this.status.setText(status);
+        SplashScreen.status.setText(status);
     }
 
     public void setInvisible(){

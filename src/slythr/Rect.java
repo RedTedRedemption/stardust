@@ -32,10 +32,8 @@ public class Rect extends Primitive {
 
 	/**
 	 * Rect constructor.
-	 * @param gamestate An instance of the class GlobalGamestate that will be used to manage the gamestate at large.
 	 */
-	public Rect(GlobalGamestate gamestate) {
-		globalGamestate = gamestate;
+	public Rect() {
 
 	}
 

@@ -29,7 +29,7 @@ public class Testsprite {
     }
 
     public Testsprite(){
-        self_primitive = new Rect(globalGamestate);
+        self_primitive = new Rect();
         self_primitive.setpos(50, 50);
 
     }

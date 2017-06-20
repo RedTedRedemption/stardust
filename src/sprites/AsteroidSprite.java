@@ -1,6 +1,6 @@
 package sprites;
 
-import Particles.AsteroidExplodeParticle;
+import particles.AsteroidExplodeParticle;
 import slythr.Physics;
 import slythr.Primitive;
 import slythr.Rect;
@@ -44,7 +44,7 @@ public class AsteroidSprite {
     public static void instantiate(){
         //System.out.println("instantiating bullet");
         AsteroidSprite new_instance = new AsteroidSprite();
-        new_instance.self_primitive = new Rect(globalGamestate);
+        new_instance.self_primitive = new Rect();
         spawn_location = rand.nextInt(host_frame.getWidth() - 20) + 20;
         new_instance.self_primitive.setpos(spawn_location, -30);
         new_instance.self_primitive.setColor(255, 0, 0);
@@ -94,10 +94,10 @@ public class AsteroidSprite {
                     kill(instance);
                     AsteroidExplodeParticle.instantiate(instance.self_primitive.getpos());
                 }
-                for (BulletSprite bullet : bullets.spritelist) {
+                for (BulletSprite bullet : BulletSprite.spritelist) {
                     if (Physics.doObjectsCollide(instance.self_primitive, bullet.self_primitive)) {
                         instance.statevar_myhealth = instance.statevar_myhealth - bullet.gamevar_damage_dealt;
-                        bullets.kill(bullet);
+                        BulletSprite.kill(bullet);
                     }
                 }
             }

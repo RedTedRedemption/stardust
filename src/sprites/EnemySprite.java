@@ -44,7 +44,7 @@ public class EnemySprite{
 
     public EnemySprite(){
 
-        self_primitive = new Rect(globalGamestate);
+        self_primitive = new Rect();
 
         for (int i = 0; i <= 100; i++){
             animation_points.add(new int[] {1, 1});

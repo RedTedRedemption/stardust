@@ -23,7 +23,7 @@ public class GameFrame extends JPanel implements KeyListener {
     //create resources
     //Primitive ship = new ClosedPoly();
     //Primitive testtext = new Text("asdf", 36);
-    Primitive ship = new Rect(globalGamestate);
+    Primitive ship = new Rect();
 
 
 

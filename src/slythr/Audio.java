@@ -4,9 +4,11 @@ package slythr;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import stardust.GlobalGamestate;
+import stardust.Settings;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -97,11 +99,25 @@ public class Audio implements Runnable {
      * Set the volume of all audio instances.
      * @param vol {@code double} value between 0 and 1 to set all instances' volume to.
      */
-    public static void set_volume(double vol){
+    public static void set_volume(double vol) throws FileNotFoundException {
         GlobalGamestate.evar_master_volume = vol;
+        Settings.set("volume", Double.toString(vol));
         for (Audio a : audios){
             a.mediaPlayer.setVolume(GlobalGamestate.evar_master_volume);
         }
+    }
+
+
+    /**
+     * Will create an audio object with the given path and play it. This object can only be manipulated by the {@code pauseAll()},
+     * {@code resumeAll}, and {@code set_volume()} methods. Instances created by this method cannot be controlled individually.
+     * @param path Path to the file to play
+     * @throws IOException
+     * @throws LineUnavailableException
+     */
+    public static void quick_play(String path) throws IOException, LineUnavailableException {
+        Audio quick_audio = new Audio(path);
+        quick_audio.play();
     }
 
 }

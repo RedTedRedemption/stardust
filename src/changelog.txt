@@ -1,0 +1,44 @@
+v0.2.9-alpha:
+
+    Efficiency, options, and animations.
+
+    This update introduces an options panel that can adjust the volume of all sound the game plays, and makes efficiency improvements.
+    The update also reworks how animations work, allowing them to be quickly used on objects more easily, and applies new
+    animations to varioius elements.
+
+    Changes:
+        - The Audio class now collects all of its instances into an array list, allowing them to be manipulated in bulk
+        - Implemented a "change volume" method that changes the volume of the MediaPlayers of all Audio instances
+        - Created Options menu, its resources, and behaviors:
+            - includes a slider that controls the master volume
+        - Dealt with massive efficiency problems:
+            - Analysis revealed that the FPScounter and render threads were taking up large amounts of CPU usage
+            - Added a Thread.sleep() to the FPScounter to update the fps display every second, instead of checking for
+                elapsed time as often as possible, and updating when the elapsed time was 1 second
+            - Made the timer responsible for calling the render process have a delay of 1 millisecond, creating an un-noticable
+                delay on the gameloop, and preventing the timer from becoming a runaway process, which had resulted in high cpu usage,
+                power consumption, and cpu heat
+        - Rework of animation system to implement a "generic animation" method that creates a copy of the animation and targets
+            a primitive, adds it to a generic animation buffer, and starts the animation
+        - Added a "animation cleaner" on a timer, that clears out completed generic animations from the generic buffer every
+            5 seconds to prevent memory leaks
+        - Gave various text objects in menus animations
+        - Reworked clearing saved games option to bring up a selection of save files to delete -- selecting a file does
+            not do anything yet
+        - Added documentation to some engine classes
+        - Added a custom exception for Slythr
+        - Various improvements and bugfixes
+
+
+
+v0.2.10-alpha:
+
+    Engine updates and misc improvements.
+
+    This update includes general updates to the engine, additions to the javadocs, and a fix for the gameover sequence.
+
+    Changes:
+        - Changed signature of a few Slythr Primitive objects' constructors, removing the requirement for a GlobalGamestate to be required
+            on initialization. This is to allow easier separation of Slythr from the Stardust game
+        - Additions to the Slythr javadocs
+        

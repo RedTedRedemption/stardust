@@ -1,7 +1,7 @@
 package slythr;
 
 /**
- * Created by teddy on 6/10/17.
+ * A Slythr engine specific error.
  */
 public class SlythrError extends Exception {
 

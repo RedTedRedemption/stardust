@@ -24,6 +24,10 @@ public class Complex {
 
     public Stack elements = new Stack();
 
+    /**
+     * Draw the complex.
+     * @param g Graphics instance to draw to
+     */
     public void draw(Graphics g){
         elements.draw(g);
     }

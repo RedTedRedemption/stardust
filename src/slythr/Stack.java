@@ -48,6 +48,15 @@ public class Stack {
 	}
 
 	/**
+	 * Disable all items in the stack
+	 */
+	public void disable_all(){
+		for (Primitive primitive : stack) {
+			primitive.disable();
+		}
+	}
+
+	/**
 	 * Len int.
 	 *
 	 * @return the number of items in the stack.

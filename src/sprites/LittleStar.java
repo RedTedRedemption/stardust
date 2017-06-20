@@ -6,7 +6,6 @@ import stardust.GlobalGamestate;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -36,7 +35,7 @@ public class LittleStar {
     }
 
     public LittleStar(){
-        this.self_primitive = new Rect(globalGamestate);
+        this.self_primitive = new Rect();
         this.self_primitive.setColor(255, 255, 255);
         //self_primitive.setHeight(5);
         //self_primitive.setWidth(5);
@@ -44,7 +43,7 @@ public class LittleStar {
         this.self_primitive.setpos(rand.nextInt(host_frame.getWidth()) + 5, rand.nextInt(host_frame.getHeight()));
         this.self_primitive.setHeight(5);
         this.self_primitive.setWidth(5);
-        self_primitive.setPhysics_velocity_y(rand.nextInt(globalGamestate.gamevar_maxlittlestarspeed) + globalGamestate.gamevar_minlittlestarspeed);
+        self_primitive.setPhysics_velocity_y(rand.nextInt(GlobalGamestate.gamevar_maxlittlestarspeed) + GlobalGamestate.gamevar_minlittlestarspeed);
         //self_primitive.setPhysics_velocity_y(rand.nextInt(20) + 3);
         this.self_primitive.setPhysics_velocity_y(10);
         this.self_primitive.setLabel("one of the background stars");
@@ -54,7 +53,7 @@ public class LittleStar {
         for (LittleStar instance : spritelist){
             if (instance.self_primitive.getpos()[1] > host_frame.getHeight()){
                 instance.self_primitive.setpos(rand.nextInt(host_frame.getWidth()) + 5, -10);
-                instance.self_primitive.setPhysics_velocity_y(rand.nextInt(globalGamestate.gamevar_maxlittlestarspeed) + globalGamestate.gamevar_minlittlestarspeed);
+                instance.self_primitive.setPhysics_velocity_y(rand.nextInt(GlobalGamestate.gamevar_maxlittlestarspeed) + GlobalGamestate.gamevar_minlittlestarspeed);
 
             }
         }

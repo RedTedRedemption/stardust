@@ -7,6 +7,10 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 
+/**
+ * A primitive that renders as text.
+ */
+
 //todo implement physics for text
 
 public class Text extends Primitive{
@@ -35,12 +39,11 @@ public class Text extends Primitive{
 	public int height;
 	public int width;
 
-	public Text(String content, int size, Graphics g, GlobalGamestate gamestate) {
-		globalGamestate = gamestate;
+	public Text(String content, int size, Graphics g) {
 		self_font = new SFont(Font.ITALIC, "Serif");
 		self_content = content;
 		self_size = size;
-		bounding_box = new Rect(globalGamestate);
+		bounding_box = new Rect();
 		bounding_box.setAttributes(this.getpos()[0], this.getpos()[1],20, 20, 0,0,0);
 		bounding_box.setpos(origin_x, origin_y);
 		setLabel(content);
@@ -88,9 +91,13 @@ public class Text extends Primitive{
 		bounding_box.setpos(this.getpos()[0], this.getpos()[1] - bounding_box.getHeight());
 	}
 
-	public void centerx(int x, Graphics g){
-		update(g);
-		origin_x = x - bounding_box.getWidth() / 2;
+	public void centerx(int x){
+		origin_x = x - (this.getBounding_box().getWidth() / 2);
+	}
+
+	public void centery(int y){
+		origin_y = y - (this.getBounding_box().getHeight() / 2);
+
 	}
 
 
@@ -116,7 +123,7 @@ public class Text extends Primitive{
 
     public boolean isClicked(){
     	try {
-			if (new Physics(globalGamestate).pointInObj(MainPane.evar_mousepos[0], MainPane.evar_mousepos[1], this)) {
+			if (Physics.pointInObj(MainPane.evar_mousepos[0], MainPane.evar_mousepos[1], this)) {
 				return true;
 			}
 		} catch (java.lang.NullPointerException e){

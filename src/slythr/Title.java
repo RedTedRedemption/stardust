@@ -5,9 +5,6 @@ import stardust.MainPane;
 
 import java.awt.*;
 
-/**
- * Created by teddy on 5/30/17.
- */
 public class Title {
 
     String self_content;

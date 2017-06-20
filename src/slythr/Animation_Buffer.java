@@ -34,8 +34,21 @@ public class Animation_Buffer {
         }
     }
 
+    /**
+     * Remove an animation from the buffer.
+     * @param animation to remove
+     */
     public void remove(Animation animation){
         buffer.remove(buffer.indexOf(animation));
+    }
+
+    /**
+     * Pause all animations in the buffer.
+     */
+    public void pause_all(){
+        for (Animation animation : buffer) {
+            animation.pause();
+        }
     }
 
 }

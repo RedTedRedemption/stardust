@@ -1,5 +1,7 @@
 package slythr;
 
+import stardust.GlobalGamestate;
+
 /**
  * Created by teddy on 5/23/17.
  */
@@ -15,10 +17,8 @@ public class SplashThread implements Runnable {
     public void run(){
         System.out.println("showing splash...");
         splash = new slythr.SplashScreen(3000);
-
         splash.showSplash();
-        Runtime r = Runtime.getRuntime();
-        r.gc();
+        GlobalGamestate.runtime.gc();
         System.out.println("splash done");
     }
 

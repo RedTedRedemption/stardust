@@ -22,7 +22,7 @@ public class BulletSprite {
     public static ArrayList<BulletSprite> spritelist = new ArrayList<>();
 
     public BulletSprite(){
-       self_primitive = new Rect(globalGamestate);
+       self_primitive = new Rect();
     }
 
     public static void instantiate(Primitive emitter){

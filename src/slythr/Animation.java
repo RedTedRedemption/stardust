@@ -5,25 +5,21 @@ import com.sun.istack.internal.Nullable;
 import java.util.ArrayList;
 
 /**
- * Created by teddy on 4/20/17.
- *
  * This class is responsible for creation and management of animations for primitives.
  * Animations have 4 modes: Keyframe, offset, enabled, and action.
  * Keyframe animations move the target to a point.
- * Offset animations move the target by a delta
- * Enabled enables or disables the object's rendering: 1 will cause the object to be rendered, 0 will cause it to not be rendered
- * action animations execute a slythr action. A bread[0] value of 1 will cause execute() to be called, a bread[1] value of 1 will cause execute2() to be called.
+ * Offset animations move the target by a delta.
+ * Enabled enables or disables the object's rendering: 1 will cause the object to be rendered, 0 will cause it to not be rendered.
+ * Action animations execute a slythr action. A bread[0] value of 1 will cause execute() to be called, a bread[1] value of 1 will cause execute2() to be called.
+ * Opacity will set the opacity of an object to the bread[0] value.
+ * Color will set the object's color where bread is {red, blue, green}.
  */
 public class Animation {
 
     /**
-     * Array list containing a set of int[2] objects that indicate what action the animation should act upon the target at a given frame
+     * Array list containing a set of int[2] objects that indicate what action the animation should act upon the target at a given frame.
      */
     public ArrayList<int[]> bread = new ArrayList<>();
-    /**
-     * A primitive that the animation will act on
-     */
-
     public static final String KEYFRAME = "keyframe";
     public static final String OFFSET = "offset";
     public static final String ENABLED = "enabled";
@@ -33,6 +29,9 @@ public class Animation {
     public static final String COLOR = "color";
 
     public static Animation_Buffer default_buffer;
+    /**
+     * A primitive that the animation will act on.
+     */
     public Primitive target;
     public int step = 0;
     public String mode;
@@ -48,7 +47,6 @@ public class Animation {
      * @param Mode What the animation should do to the object.
      * @param point_array
      */
-
     public Animation(@Nullable Primitive Target, String Mode, ArrayList<int[]> point_array){
         for (int[] a : point_array){
             bread.add(a);
@@ -57,6 +55,11 @@ public class Animation {
         mode = Mode;
     }
 
+    /**
+     * Create a new Animation. This method does not require an initial set of animation points.
+     * @param Target
+     * @param Mode
+     */
     public Animation(@Nullable Primitive Target, String Mode){
         target = Target;
         mode = Mode;
@@ -79,7 +82,7 @@ public class Animation {
     }
 
     /**
-     * Steps the animation, and executes appropriate code based on mode and the value of bread
+     * Steps the animation and executes appropriate code based on mode and the value of bread.
      */
     public boolean Step() {
         if (enabled) {
